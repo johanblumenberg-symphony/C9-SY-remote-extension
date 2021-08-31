@@ -19,6 +19,8 @@ const api = new C9API(http);
 async function main() {
     const user = await api.getUserByUserName('johanblumenberg');
     console.log(user);
+    const buttons = await api.getUserButtons(user.userId);
+    console.log(buttons);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
