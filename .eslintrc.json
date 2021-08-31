@@ -1,0 +1,233 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "project": "./tsconfig.json"
+    },
+    "env": {
+        "browser": true,
+        "node": true,
+        "mocha": true,
+        "jest": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:react/recommended",
+        "plugin:import/errors",
+        "plugin:import/warnings",
+        "plugin:import/typescript"
+    ],
+    "plugins": [
+        "@typescript-eslint",
+        "ban",
+        "unused-imports"
+    ],
+
+    "rules": {
+        "eqeqeq": "error",
+        "no-async-promise-executor": "error",
+        "no-console": "error",
+        "no-constant-condition": [ "error", { "checkLoops": false }],
+        "no-debugger": "error",
+        "no-dupe-args": "error",
+        "no-eval": "error",
+        "no-extra-semi": "error",
+        "no-implied-eval": "error",
+        "no-promise-executor-return": "off",
+        "no-prototype-builtins": "off",
+        "no-redeclare": "off", // Overridden by @typescript-eslint/no-redeclare
+        "no-template-curly-in-string": "error",
+        "no-unreachable": "error",
+        "no-unused-expressions": [ "error", { "allowShortCircuit": true, "allowTernary": true } ],
+        "no-unused-vars": "off", // Overridden by @typescript-eslint/no-unused-vars
+        "prefer-const": "off",
+        "semi": "error",
+
+        "@typescript-eslint/await-thenable": "error",
+        "@typescript-eslint/ban-tslint-comment": "error",
+        "@typescript-eslint/ban-types": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-empty-interface": "off",
+        "@typescript-eslint/no-floating-promises": [ "error", { "ignoreVoid": false } ],
+        "@typescript-eslint/no-for-in-array": "error",
+        "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/no-redeclare": [ "off" ], // "off", because it complains about type and module having the same name
+        "@typescript-eslint/no-unused-vars": [ "error", { "args": "after-used", "argsIgnorePattern": "^_", "ignoreRestSiblings": true } ],
+        "@typescript-eslint/prefer-namespace-keyword": "off",
+        "@typescript-eslint/restrict-template-expressions": [ "off" ], // "off", because it doesn't allow types like `'a' | 'b'`
+
+        "import/default": "error",
+        "import/export": "error",
+        "import/named": "error",
+        "import/namespace": "error",
+        "import/newline-after-import": "off", // TODO: maybe enable later?
+        "import/no-absolute-path": "error",
+        "import/no-amd": "error",
+        "import/no-commonjs": "off", // TODO: maybe enable later?
+        "import/no-cycle": "off", // TODO: maybe enable later?
+        "import/no-duplicates": "off",
+        "import/no-dynamic-require": "error",
+        "import/no-extraneous-dependencies": "error",
+        "import/no-internal-modules": [ "error", { "allow": [
+            // Allow importing internal modules from all packages that do not start with @ or /
+            "!{@,/}*/**",
+
+            "@symphony/symphony-rtc/dist/js/**",
+            "@symphony/symphony-rtc/client/locales/**",
+            "@symphony/symphony-rtc/assets/sounds/*",
+            "@symphony/rtc-greenkeeper-lib/dist",
+            "@symphony/rtc-greenkeeper-lib/dist/**",
+            "@symphony/rtc-presenter-root/dist/testing",
+            "@symphony/rtc-meet/dist/**",
+            "@symphony-ui/uitoolkit-components/styles",
+            "@material-ui/core/**"
+        ] } ],
+        "import/no-self-import": "error",
+        "import/no-unresolved": "error",
+        "import/no-unused-modules": "error",
+        "import/no-useless-path-segments": "error",
+        "import/no-unassigned-import": "off",
+        "import/unambiguous": "off", // TTODO: maybe enable later?
+
+        "unused-imports/no-unused-imports-ts": "error",
+        "unused-imports/no-unused-vars-ts": [ "error", { "vars": "all", "args": "after-used", "argsIgnorePattern": "^_", "ignoreRestSiblings": true } ],
+
+        // Whitespace rules
+        "array-bracket-spacing": "error",
+        "arrow-spacing": "error",
+        "block-spacing": "error",
+        "brace-style": "error",
+        "comma-spacing": "error",
+        "computed-property-spacing": "error",
+        "func-call-spacing": "error",
+        "function-call-argument-newline": ["error", "consistent"],
+        "function-paren-newline": ["error", "multiline-arguments"],
+        "indent": ["error", 4, { "SwitchCase": 1 }],
+        "key-spacing": "error",
+        "keyword-spacing": "error",
+        "no-irregular-whitespace": "error",
+        "no-multi-spaces": "error",
+        "no-trailing-spaces": "error",
+        "no-whitespace-before-property": "error",
+        "object-curly-spacing": [ "error", "always" ],
+        "rest-spread-spacing": "error",
+        "semi-spacing": "error",
+        "space-before-blocks": "error",
+        "space-before-function-paren": [ "error", { "anonymous": "never", "named": "never", "asyncArrow": "always" } ],
+        "space-in-parens": ["error", "never"],
+        "space-infix-ops": "error",
+        "space-unary-ops": "error",
+        "spaced-comment": "error",
+        "switch-colon-spacing": "error",
+        "template-curly-spacing": "error",
+
+        "ban/ban": [
+            "error",
+
+            // No focused tests
+            { "name": ["context", "only"], "message": "don't focus tests" },
+            { "name": ["describe", "only"], "message": "don't focus tests" },
+            { "name": "fdescribe", "message": "don't focus tests" },
+            { "name": ["it", "only"], "message": "don't focus tests" },
+            { "name": "fit", "message": "don't focus tests" },
+            { "name": ["test", "only"], "message": "don't focus tests" },
+            { "name": "ftest", "message": "don't focus tests" }
+        ],
+
+        "import/no-nodejs-modules": "error",
+
+        "react/jsx-fragments": "error",
+        "react/jsx-key": "error",
+        "react/jsx-no-bind": ["error", {
+            "ignoreDOMComponents": false,
+            "ignoreRefs": true,
+            "allowArrowFunctions": false,
+            "allowFunctions": false,
+            "allowBind": false
+        }],
+        "react/jsx-no-comment-textnodes": "error",
+        "react/jsx-no-constructed-context-values": "error",
+        "react/jsx-no-duplicate-props": "error",
+        "react/jsx-no-literals": "error",
+        "react/jsx-no-script-url": "error",
+        "react/jsx-no-target-blank": "error",
+        "react/jsx-no-useless-fragment": "error",
+        "react/jsx-pascal-case": "error",
+        "react/no-children-prop": "error",
+        "react/no-danger": "error",
+        "react/no-deprecated": "error",
+        "react/no-did-mount-set-state": "error",
+        "react/no-did-update-set-state": "error",
+        "react/no-direct-mutation-state": "error",
+        "react/no-find-dom-node": "error",
+        "react/no-is-mounted": "error",
+        "react/no-redundant-should-component-update": "error",
+        "react/no-render-return-value": "error",
+        "react/no-string-refs": "error",
+        "react/no-this-in-sfc": "error",
+        "react/no-unescaped-entities": "error",
+        "react/no-unknown-property": "error",
+        "react/no-unsafe": "error",
+        "react/no-unused-state": "error",
+        "react/no-will-update-set-state": "error",
+        "react/react-in-jsx-scope": "error",
+        "react/require-render-return": "error",
+        "react/self-closing-comp": "error",
+        "react/state-in-constructor": "error",
+        "react/style-prop-object": "error",
+        "react/void-dom-elements-no-children": "error",
+
+        // JSX whitespace
+        "react/jsx-child-element-spacing": "error",
+        "react/jsx-closing-bracket-location": [ "error", "line-aligned" ],
+        "react/jsx-closing-tag-location": "off", // Conflicts with jsx-indent
+        "react/jsx-curly-newline": "error",
+        "react/jsx-curly-spacing": ["error", { "when": "always", "children": true }],
+        "react/jsx-equals-spacing": "error",
+        "react/jsx-indent": ["error", 4],
+        "react/jsx-indent-props": ["error", 4],
+        "react/jsx-props-no-multi-spaces": "error",
+        "react/jsx-tag-spacing": "error",
+
+        // Off for now because too many places to fix, enable later. Keep commits small.
+        "no-var": "off",
+        "react/prop-types": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-namespace": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/prefer-as-const": "off"
+
+        /*
+        // Check and enable later
+
+        // Unnecessary boolean casts
+        "no-extra-boolean-casts": "error",
+
+        // Non null assertions
+        "@typescript-eslint/no-non-null-assertion": "error",
+        "@typescript-eslint/no-unnecessary-type-assertion",
+        "@typescript-eslint/non-nullable-type-assertion-style",
+        "@typescript-eslint/no-confusing-non-null-assertion",
+        "@typescript-eslint/no-extra-non-null-assertion",
+        "@typescript-eslint/no-non-null-asserted-optional-chain",
+        */
+    },
+
+    "overrides": [
+        {
+            "files": ["*.spec.ts"],
+            "rules": {
+                "no-console": "off",
+                "@typescript-eslint/no-non-null-assertion": "off",
+                "no-global-assign": "off",
+                "import/no-nodejs-modules": "off"
+            }
+        }
+    ]
+}

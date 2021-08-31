@@ -3,7 +3,35 @@
   "version": "1.0.0",
   "description": "Symphony extension adding a remote control for C9 trader",
   "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "compile": "tsc --incremental",
+    "test": "yarn run lint",
+    "lint": "eslint './src/**/*.ts'"
+  },
   "repository": "https://github.com/johanblumenberg-symphony/C9-SY-remote-extension.git",
   "author": "johanblumenberg <johan.blumenberg@symphony.com>",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@symphony/rtc-http": "^1.0.11",
+    "tslib": "^2.3.1",
+    "uuid": "^8.3.2",
+    "yarn-deduplicate": "^3.1.0"
+  },
+  "devDependencies": {
+    "@trust/webcrypto": "^0.9.2",
+    "@types/fs-extra": "^9.0.12",
+    "@types/node": "^16.7.9",
+    "@types/uuid": "^8.3.1",
+    "@typescript-eslint/eslint-plugin": "^4.30.0",
+    "@typescript-eslint/parser": "^4.30.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-ban": "^1.5.2",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-react": "^7.25.1",
+    "eslint-plugin-unused-imports": "^1.1.4",
+    "fs-extra": "^10.0.0",
+    "node-fetch-polyfill": "^2.0.6",
+    "typescript": "^4.4.2"
+  }
 }
