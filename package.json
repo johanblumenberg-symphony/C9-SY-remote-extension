@@ -1,0 +1,9 @@
+{
+  "name": "@symphony/C9-remote",
+  "version": "1.0.0",
+  "description": "Symphony extension adding a remote control for C9 trader",
+  "main": "dist/index.js",
+  "repository": "https://github.com/johanblumenberg-symphony/C9-SY-remote-extension.git",
+  "author": "johanblumenberg <johan.blumenberg@symphony.com>",
+  "license": "UNLICENSED"
+}
