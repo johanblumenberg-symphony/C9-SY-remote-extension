@@ -1,24 +1,27 @@
-import { interfaces } from '@mana/extension-lib';
+import { interfaces, uiComps } from '@mana/extension-lib';
 import { createUpdater } from '@symphony/symphony-rtc/dist/js/utils/createUpdater';
 import { createSelector } from '@symphony/symphony-rtc/dist/js/utils/createSelector';
-import { C9View } from './C9View';
+import C9Buttons, { Actions } from './C9Buttons';
 
 const { RailLocations, RailItemState } = interfaces.rail;
 
-export class RailItem implements interfaces.rail.IRailItem {
+export class RailItem extends interfaces.BaseView implements interfaces.rail.IRailItem, interfaces.overlay.IOverlayView {
   public location: interfaces.rail.RailLocations = RailLocations.top;
+  public renderer: interfaces.view.Renderer;
 
   private _subscribers: Map<interfaces.base.SubscriberId, () => void> = new Map();
   private _nextSubscriberId: number = 0;
 
-  private _navHidden = false;
-  private _view: C9View | undefined;
+  private _open = false;
 
   constructor(
-    private _nav: interfaces.nav.INav,
-    private _rail: interfaces.rail.IRail,
+      overlay: interfaces.windowOverlay.IWindowOverlayService,
+      private _rail: interfaces.rail.IRail,
   ) {
-      this._nav.subscribe(this._onNavChange);
+      super();
+
+      overlay.registerOverlayViewFactory(async () => [this]);
+      this.renderer = uiComps.createReactRenderer<{}, Actions>(this, C9Buttons);
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this._rail.register(this);
   }
@@ -33,20 +36,8 @@ export class RailItem implements interfaces.rail.IRailItem {
   }
 
   public async onClick() {
-      if (this._navHidden) {
-          this._nav.show();
-      }
-
-      if (!this._view) {
-          this._view = new C9View();
-          this._view.addCloseListener(() => {
-              this._view = undefined;
-              this._updateSubscribers();
-          });
-
-          this._nav.openItem(this._view);
-          this._updateSubscribers();
-      }
+      this._open = !this._open;
+      this._updateSubscribers();
   }
 
   public async getDisplay() {
@@ -54,24 +45,37 @@ export class RailItem implements interfaces.rail.IRailItem {
   }
 
     private _getDisplay = createSelector(
-        () => !!this._view,
-        () => this._navHidden,
-        (open, navHidden) => {
+        () => this._open,
+        (open) => {
             return {
                 icon: 'micon',
                 tooltip: 'C9 Remote',
-                state: open && !navHidden ? RailItemState.ACTIVE : RailItemState.PASSIVE,
+                state: open ? RailItemState.EXCLUSIVE : RailItemState.PASSIVE,
             };
         },
     );
 
-  private _onNavChange = () => {
-      this._navHidden = this._nav.isNavHidden();
-      this._updateSubscribers();
-  }
+    getState() {
+        return {};
+    }
 
-  private _updateSubscribers = createUpdater(
-      () => this._getDisplay(),
-      () => this._subscribers.forEach(s => s()),
-  );
+    getActions() {
+        return {
+            onHide: this._hide
+        };
+    }
+
+    private _hide = () => {
+        this._open = false;
+        this._updateSubscribers();
+    }
+
+    public getDockingMode(): interfaces.overlay.DockingMode | undefined {
+        return this._open ? interfaces.overlay.DockingMode.FLOAT : undefined;
+    }
+
+    private _updateSubscribers = createUpdater(
+        () => this._getDisplay(),
+        () => this._subscribers.forEach(s => s()),
+    );
 }

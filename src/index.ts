@@ -5,12 +5,12 @@ import Symbols = interfaces.Symbols;
 
 export default class Extension implements IExtension {
     private _rail: interfaces.rail.IRail;
-    private _nav: interfaces.nav.INav;
+    private _overlay: interfaces.windowOverlay.IWindowOverlayService;
 
     public async init(init: IExtensionInit, registry: IRegistry) {
         this._rail = await registry.resolve<interfaces.rail.IRail>(Symbols.IRail);
-        this._nav = await registry.resolve<interfaces.nav.INav>(Symbols.INav);
+        this._overlay = await registry.resolve<interfaces.windowOverlay.IWindowOverlayService>(Symbols.IWindowOverlay);
 
-        new RailItem(this._nav, this._rail);
+        new RailItem(this._overlay, this._rail);
     }
 }
