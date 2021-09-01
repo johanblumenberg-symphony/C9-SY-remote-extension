@@ -66,7 +66,7 @@ export function createC9Http(
     apiKey: string,
     apiSecret: string,
 ) {
-    return createHttp({ cache: 'no-cache', mode: 'no-cors', credentials: 'omit' })
+    return createHttp({ cache: 'no-cache', mode: 'cors', credentials: 'omit' })
         .chain(chain => new C9Auth(chain, apiKey, apiSecret))
         .chain(addBaseUrl('https://managementapi.prod1.xhoot.com:443/external/apis'));
 }

@@ -1,5 +1,7 @@
 const yargs = require('yargs');
+const fs = require('fs-extra');
 const path = require('path');
+const os = require('os');
 const Sym20WebpackPlugin = require('@sym20/extension-webpack-plugin');
 const webpack = require('webpack');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
@@ -16,6 +18,8 @@ const argv = yargs.argv;
 const LOCAL_DOMAIN = 'local-dev.symphony.com';
 const LOCAL_PORT = 9091;
 const proxyTarget = argv.proxy ? `https://${argv.proxy}/` : 'https://st3.symphony.com/';
+
+const API_KEYS = fs.readJSONSync(path.join(os.homedir(), '.c9.json'));
 
 module.exports = {
     mode: isDev() ? 'development' : 'production',
@@ -50,6 +54,9 @@ module.exports = {
                 builtOn,
                 gitHash,
             }),
+        }),
+        new webpack.DefinePlugin({
+            API_KEYS: JSON.stringify(API_KEYS),
         }),
         new Sym20WebpackPlugin({
             name: 'C9 Remote',
