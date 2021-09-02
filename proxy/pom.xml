@@ -45,11 +45,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<jvmArguments>
-						-javaagent:./lib/extract-tls-secrets-4.0.0.jar=./network-keys.txt
-					</jvmArguments>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -68,4 +63,22 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>network-capture</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<jvmArguments>
+								-javaagent:./lib/extract-tls-secrets-4.0.0.jar=./network-keys.txt
+							</jvmArguments>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
