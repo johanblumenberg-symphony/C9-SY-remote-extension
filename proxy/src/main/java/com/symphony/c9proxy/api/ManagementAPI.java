@@ -13,7 +13,7 @@ import com.symphony.c9proxy.c9.C9User;
 import com.symphony.c9proxy.sbe.SBEUser;
 import com.symphony.c9proxy.sbe.SBEUserAPI;
 
-@RestController
+@RestController()
 public class ManagementAPI {
     @Autowired
     private C9ManagementAPI c9Api;
@@ -21,7 +21,7 @@ public class ManagementAPI {
     @Autowired
     private SBEUserAPI sbeApi;
 
-    @GetMapping("/users")
+    @GetMapping("/user")
     public C9User getUser(@RequestHeader("x-symphony-csrf-token") String csrfToken,
         @RequestHeader("cookie") List<String> cookies) {
         SBEUser sbeUser = sbeApi.getUser(csrfToken, cookies);

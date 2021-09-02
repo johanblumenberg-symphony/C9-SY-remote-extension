@@ -19,8 +19,6 @@ const LOCAL_DOMAIN = 'local-dev.symphony.com';
 const LOCAL_PORT = 9091;
 const proxyTarget = argv.proxy ? `https://${argv.proxy}/` : 'https://st3.symphony.com/';
 
-const API_KEYS = fs.readJSONSync(path.join(os.homedir(), '.c9.json'));
-
 module.exports = {
     mode: isDev() ? 'development' : 'production',
     devtool: isDev() ? 'inline-source-map' : 'source-map',
@@ -55,9 +53,6 @@ module.exports = {
                 gitHash,
             }),
         }),
-        new webpack.DefinePlugin({
-            API_KEYS: JSON.stringify(API_KEYS),
-        }),
         new Sym20WebpackPlugin({
             name: 'C9 Remote',
             cwd: './dist',
@@ -82,6 +77,14 @@ module.exports = {
         inline: true,
         disableHostCheck: true,
         proxy: {
+            '/cloud9/**': {
+                target: 'https://localhost:8443',
+                changeOrigin: true,
+                hostRewrite: true,
+                cookieDomainRewrite: LOCAL_DOMAIN,
+                secure: false,
+                logLevel: 'debug',
+            },
             '/**': {
                 target: proxyTarget,
                 changeOrigin: true,

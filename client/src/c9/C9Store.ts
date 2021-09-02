@@ -1,6 +1,5 @@
-import { Button, C9API, User } from "../c9/api";
+import { Button, C9API, User } from "./api";
 import { memoizePromise } from '@symphony/rtc-memoize';
-import { interfaces } from "@mana/extension-lib";
 import { ChangeNotification } from '@symphony/symphony-rtc/dist/js/model/utils';
 
 export class C9Store {
@@ -10,19 +9,17 @@ export class C9Store {
     constructor(
         private _changeNotification: ChangeNotification,
         private _api: C9API,
-        private _userStore: interfaces.data.IUserStore,
     ) { }
 
-    public fetchUser = memoizePromise(async () => {
-        const user = await this._userStore.getMyInfo();
-        return this._api.getUserByEmail(user.email);
-    }).then(user => {
+    public fetchUser = memoizePromise(
+        () => this._api.getCurrentUser(),
+    ).then(user => {
         this._currentUser = user;
         this._changeNotification.post();
         return user;
     });
 
-    public getUser() {
+    public getCurrentUser() {
         if (!this._currentUser) {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             this.fetchUser();
@@ -30,10 +27,9 @@ export class C9Store {
         return this._currentUser;
     }
 
-    public fetchButtons = memoizePromise(async () => {
-        const user = await this.fetchUser();
-        return this._api.getUserButtons(user.userId);
-    }).then(buttons => {
+    public fetchButtons = memoizePromise(
+        () => this._api.getUserButtons(),
+    ).then(buttons => {
         this._buttons = buttons;
         this._changeNotification.post();
         return buttons;

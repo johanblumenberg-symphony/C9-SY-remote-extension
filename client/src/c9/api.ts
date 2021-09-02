@@ -48,34 +48,18 @@ interface ButtonsResponse {
 export class C9API {
     constructor(private _http: Http) { }
 
-    private async _getUserBy(key: string, value: string): Promise<User> {
-        const res = await this._http.postJson<UsersResponse>('/users', {
-            [key]: [value],
-        });
+    public async getCurrentUser(): Promise<User> {
+        const res = await this._http.get<User>('/cloud9/api/v1/user');
 
         if (res.ok) {
-            if (res.data.users.length === 1) {
-                return res.data.users[0];
-            } else if (res.data.users.length === 0) {
-                throw new NotFound();
-            } else {
-                throw new TooManyResults();
-            }
+            return res.data;
         } else {
             throw new HttpError(res);
         }
     }
 
-    public getUserByUserName(userName: string): Promise<User> {
-        return this._getUserBy('userNames', userName);
-    }
-
-    public getUserByEmail(email: string): Promise<User> {
-        return this._getUserBy('emails', email);
-    }
-
-    public async getUserButtons(userId: number) {
-        const res = await this._http.postJson<ButtonsResponse>(`/users/${userId}/buttons`, {});
+    public async getUserButtons(): Promise<Button[]> {
+        const res = await this._http.get<ButtonsResponse>(`/cloud9/api/v1/buttons`);
 
         if (res.ok) {
             return res.data.buttons;
