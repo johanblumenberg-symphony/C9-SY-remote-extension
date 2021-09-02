@@ -1,4 +1,4 @@
-package com.symphony.c9proxy.management;
+package com.symphony.c9proxy.c9;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -17,27 +17,26 @@ import java.util.UUID;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import com.symphony.c9proxy.api.RestAPI;
 
 import lombok.Data;
 
 @Component
 public class C9ManagementAPI {
-    private final Logger logger = LoggerFactory.getLogger(ManagementAPI.class);
+    private final Logger logger = LoggerFactory.getLogger(C9ManagementAPI.class);
     private final RestTemplate api;
     private final Mac HMAC;
     private static final ThreadLocal<DateFormat> DATE_HEADER_FORMAT = new ThreadLocal<DateFormat>() {
@@ -47,12 +46,7 @@ public class C9ManagementAPI {
             format.setTimeZone(TimeZone.getTimeZone("GMT"));
             return format;
         }
-    };
-
-    @Data
-    private static class UsersResponse {
-        private String version;
-    }
+    };    
 
     public C9ManagementAPI(C9Config config, RestTemplateBuilder restTemplateBuilder)
         throws NoSuchAlgorithmException, InvalidKeyException {
@@ -93,19 +87,56 @@ public class C9ManagementAPI {
         this.api.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
     }
 
-    @ExceptionHandler(HttpClientErrorException.class)
-    private void handleException(HttpServletResponse response, HttpClientErrorException e) throws IOException {
-        if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-            logger.warn(e.getMessage());
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-        } else {
-            logger.error(e.getMessage());
-            throw e;
-        }
+    @Data
+    @SuppressWarnings("unused")
+    private static class UsersResponse {
+        private String version;
+        private int totalUsers;
+        private List<C9User> users;
     }
 
-    public String getUser(String email) {
-        api.postForObject("/users", Map.of("emails", List.of(email)), UsersResponse.class);
-        return "Yes!";
+    public C9User getUserByEmail(String email) {
+        try {
+            UsersResponse response = api.postForObject("/users", Map.of("emails", List.of(email)), UsersResponse.class);
+            
+            if (response.users == null) {
+                throw new RuntimeException("Null users recevied when accessing /users");
+            } else if (response.users.size() == 1) {
+                return response.users.get(0);
+            } else if (response.users.isEmpty()) {
+                logger.warn("No results returned when accessing /users");
+                throw new RestAPI.NotFound();
+            } else {
+                logger.warn("Too many results returned when accessing /users");
+                throw new RestAPI.NotFound();
+            }
+        } catch (HttpClientErrorException.Unauthorized e) {
+            logger.warn("Unauthorized access to /users: " + e.getMessage());
+            throw new RestAPI.Unauthorized();
+        } catch (HttpClientErrorException.NotFound e) {
+            logger.warn("Not found accessing /users: " + e.getMessage());
+            throw new RestAPI.NotFound();
+        }
+    }
+    
+    @Data
+    @SuppressWarnings("unused")
+    private static class ButtonsResponse {
+        private String version;
+        private List<C9Button> buttons;
+    }
+
+    public List<C9Button> getButtons(Long userId) {
+        try {
+            ButtonsResponse response = api.postForObject("/users/{userId}/buttons", Map.of(), ButtonsResponse.class, userId);
+            return response.getButtons();
+        } catch (HttpClientErrorException.Unauthorized e) {
+            logger.warn("Unauthorized access to /users/{userId}/buttons: " + e.getMessage());
+            throw new RestAPI.Unauthorized();
+        } catch (HttpClientErrorException.NotFound e) {
+            logger.warn("Not found accessing /users/{userId}/buttons: " + e.getMessage());
+            throw new RestAPI.NotFound();
+        }
+
     }
 }

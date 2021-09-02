@@ -1,0 +1,8 @@
+#
+# Rename to c9-proxy.properties
+#
+
+c9.management.apiKey = <API_KEY>
+c9.management.apiSecret = <API_SECRET>
+
+sbe.rootUri = https://<POD>.symphony.com

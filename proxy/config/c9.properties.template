@@ -1,6 +1,0 @@
-#
-# Rename to c9.properties
-#
-
-management.apiKey = <API_KEY>
-management.apiSecret = <API_SECRET>
