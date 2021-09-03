@@ -1,7 +1,7 @@
 import { interfaces, uiComps } from '@mana/extension-lib';
 import { createUpdater } from '@symphony/symphony-rtc/dist/js/utils/createUpdater';
 import { createSelector } from '@symphony/symphony-rtc/dist/js/utils/createSelector';
-import C9Buttons, { Actions } from './C9Buttons';
+import C9Buttons, { Actions } from '../ui/C9App';
 
 const { RailLocations, RailItemState } = interfaces.rail;
 

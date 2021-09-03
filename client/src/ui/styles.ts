@@ -9,16 +9,46 @@ export const styles = () => createStyles({
         right: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
-    panel: {
-        height: '100%',
-        width: '50%',
-        backgroundColor: 'white',
-        animationName: '$slide-in',
-        animationDuration: '0.5s',
+    app: {
+        display: 'inline-flex',
+        backgroundColor: 'rgb(12, 17, 24)',
+
+        animation: '$slide-in .5s ease-out',
     },
 
     '@keyframes slide-in': {
-        from: { width: 0 },
-        to: { width: '50%' }
+        from: { transform: 'translate(-100%,0)' },
+        to: { transform: 'translate(0,0)' },
     },
+
+    rows: {
+        display: 'flex',
+        flexFlow: 'row',
+    },
+    columns: {
+        display: 'flex',
+        flexFlow: 'col',
+    },
+
+    button: {
+        display: 'flex',
+        width: 226,
+        height: 73,
+        margin: 3,
+
+        backgroundColor: 'rgb(28, 39, 60)',
+        borderColor: 'rgb(28, 39, 60)',
+        borderStyle: 'solid',
+        borderWidth: 1,
+
+        '&$empty': {
+            borderStyle: 'dashed',
+            color: 'rgb(28, 39, 60)',
+            backgroundColor: 'rgb(12, 17, 24)',
+            justifyContent: 'center',
+            alignItems: 'center',
+        }
+    },
+
+    empty: { }
 });

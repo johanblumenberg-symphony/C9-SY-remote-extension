@@ -24,6 +24,7 @@
     "@sym20/core": "^0.0.5",
     "@symphony/rtc-http": "^1.0.11",
     "@symphony/rtc-memoize": "^1.0.6",
+    "@symphony/rtc-react-state": "/Users/johan.blumenberg/code/SFE-RTC/packages/react-state/",
     "@symphony/symphony-rtc": "^7.0.1058",
     "tslib": "^2.3.1",
     "uuid": "^8.3.2",

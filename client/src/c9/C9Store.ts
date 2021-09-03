@@ -1,13 +1,13 @@
 import { Button, C9API, User } from "./api";
 import { memoizePromise } from '@symphony/rtc-memoize';
-import { ChangeNotification } from '@symphony/symphony-rtc/dist/js/model/utils';
+import { ChangeTracker } from '@symphony/rtc-react-state';
 
 export class C9Store {
     private _currentUser: User;
     private _buttons: Button[];
 
     constructor(
-        private _changeNotification: ChangeNotification,
+        private _tracker: ChangeTracker,
         private _api: C9API,
     ) { }
 
@@ -15,7 +15,7 @@ export class C9Store {
         () => this._api.getCurrentUser(),
     ).then(user => {
         this._currentUser = user;
-        this._changeNotification.post();
+        this._tracker.post();
         return user;
     });
 
@@ -31,7 +31,7 @@ export class C9Store {
         () => this._api.getUserButtons(),
     ).then(buttons => {
         this._buttons = buttons;
-        this._changeNotification.post();
+        this._tracker.post();
         return buttons;
     });
 

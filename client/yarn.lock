@@ -694,10 +694,16 @@
   resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/@symphony/rtc-http/-/@symphony/rtc-http-1.0.11.tgz#01c45485371657361c4d483c63a525842c534555"
   integrity sha1-AcRUhTcWVzYcTUg8Y6UlhCxTRVU=
 
-"@symphony/rtc-memoize@^1.0.6", "@symphony/rtc-memoize@~1.0.6":
+"@symphony/rtc-memoize@^1.0.6", "@symphony/rtc-memoize@~1.0.0 || 1.0.0-automatic", "@symphony/rtc-memoize@~1.0.6":
   version "1.0.6"
   resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/@symphony/rtc-memoize/-/@symphony/rtc-memoize-1.0.6.tgz#00809e968850b7ef5f51944d23fe0fce4f0552f1"
   integrity sha1-AICelohQt+9fUZRNI/4Pzk8FUvE=
+
+"@symphony/rtc-react-state@/Users/johan.blumenberg/code/SFE-RTC/packages/react-state/":
+  version "1.0.0-automatic"
+  dependencies:
+    "@symphony/rtc-memoize" "~1.0.0 || 1.0.0-automatic"
+    inversify "^4.3.0"
 
 "@symphony/saveAs@0.0.2":
   version "0.0.2"
