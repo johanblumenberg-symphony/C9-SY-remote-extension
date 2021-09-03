@@ -9,6 +9,7 @@ import { createChangeTracker, createObjectStore } from "@symphony/rtc-react-stat
 import Symbols = interfaces.Symbols;
 import { AppPresenter } from "./presentation/AppPresenter";
 import { AppPresenterImpl } from "./presentation/impl/AppPresenterImpl";
+import { OverlayView } from "./rail/OverlayView";
 
 export default class Extension implements IExtension {
     public async init(init: IExtensionInit, registry: IRegistry) {
@@ -33,7 +34,8 @@ export default class Extension implements IExtension {
             container.bind(AppPresenter.TypeTag).to(appPresenter);
 
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            rail.register(new RailItem(tracker, container, overlay, appPresenter, tracker));
+            rail.register(new RailItem(tracker, appPresenter));
+            overlay.registerOverlayViewFactory(async () => [new OverlayView(tracker, container, appPresenter)]);
         } catch (e) {
             if (e.code === 'NOT_FOUND') {
                 console.warn('No corresponding C9 user found');
