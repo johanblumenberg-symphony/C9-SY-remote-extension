@@ -49,10 +49,12 @@ export class C9API {
     constructor(private _http: Http) { }
 
     public async getCurrentUser(): Promise<User> {
-        const res = await this._http.get<User>('/cloud9/api/v1/user');
+        const res = await this._http.get<UsersResponse>('/cloud9/api/v1/user');
 
         if (res.ok) {
-            return res.data;
+            return res.data.users[0];
+        } else if (res.status === 404) {
+            throw new NotFound();
         } else {
             throw new HttpError(res);
         }

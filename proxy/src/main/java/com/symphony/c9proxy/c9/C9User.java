@@ -3,7 +3,6 @@ package com.symphony.c9proxy.c9;
 import lombok.Data;
 
 @Data
-@SuppressWarnings("unused")
 public class C9User {
     @Data
     public static class Contact {

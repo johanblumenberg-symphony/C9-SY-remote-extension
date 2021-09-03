@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 public class RestAPI {
-    
-    public static class Unauthorized extends RuntimeException{
+
+    public static class Unauthorized extends RuntimeException {
         private static final long serialVersionUID = 1L;
 
         public Unauthorized() {
@@ -17,7 +17,7 @@ public class RestAPI {
         }
     }
 
-    public static class NotFound extends RuntimeException{
+    public static class NotFound extends RuntimeException {
         private static final long serialVersionUID = 1L;
 
         public NotFound() {
@@ -36,5 +36,5 @@ public class RestAPI {
         public void resourceNotFound(HttpServletResponse response, NotFound e) throws IOException {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
-}
+    }
 }

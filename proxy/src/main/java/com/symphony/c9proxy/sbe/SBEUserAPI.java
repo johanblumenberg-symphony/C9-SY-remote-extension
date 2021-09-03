@@ -37,7 +37,8 @@ public class SBEUserAPI {
 
             HttpEntity<Void> entity = new HttpEntity<Void>(headers);
 
-            HttpEntity<SBEUser> response = api.exchange("/webcontroller/maestro/Account?clienttype=DESKTOP&hasRoomParticipations=false&xPinnedChats=false",
+            HttpEntity<SBEUser> response = api.exchange(
+                "/webcontroller/maestro/Account?clienttype=DESKTOP&hasRoomParticipations=false&xPinnedChats=false",
                 HttpMethod.GET, entity,
                 SBEUser.class);
             return response.getBody();

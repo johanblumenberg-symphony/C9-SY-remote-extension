@@ -46,7 +46,7 @@ public class C9ManagementAPI {
             format.setTimeZone(TimeZone.getTimeZone("GMT"));
             return format;
         }
-    };    
+    };
 
     public C9ManagementAPI(C9Config config, RestTemplateBuilder restTemplateBuilder)
         throws NoSuchAlgorithmException, InvalidKeyException {
@@ -88,7 +88,6 @@ public class C9ManagementAPI {
     }
 
     @Data
-    @SuppressWarnings("unused")
     private static class UsersResponse {
         private String version;
         private int totalUsers;
@@ -98,7 +97,7 @@ public class C9ManagementAPI {
     public C9User getUserByEmail(String email) {
         try {
             UsersResponse response = api.postForObject("/users", Map.of("emails", List.of(email)), UsersResponse.class);
-            
+
             if (response.users == null) {
                 throw new RuntimeException("Null users recevied when accessing /users");
             } else if (response.users.size() == 1) {
@@ -118,18 +117,22 @@ public class C9ManagementAPI {
             throw new RestAPI.NotFound();
         }
     }
-    
-    @Data
-    @SuppressWarnings("unused")
-    private static class ButtonsResponse {
-        private String version;
-        private List<C9Button> buttons;
+
+    public Object getRawUserByEmail(String email) {
+        try {
+            return api.postForObject("/users", Map.of("emails", List.of(email)), Object.class);
+        } catch (HttpClientErrorException.Unauthorized e) {
+            logger.warn("Unauthorized access to /users: " + e.getMessage());
+            throw new RestAPI.Unauthorized();
+        } catch (HttpClientErrorException.NotFound e) {
+            logger.warn("Not found accessing /users: " + e.getMessage());
+            throw new RestAPI.NotFound();
+        }
     }
 
-    public List<C9Button> getButtons(Long userId) {
+    public Object getRawButtons(Long userId) {
         try {
-            ButtonsResponse response = api.postForObject("/users/{userId}/buttons", Map.of(), ButtonsResponse.class, userId);
-            return response.getButtons();
+            return api.postForObject("/users/{userId}/buttons", Map.of(), Object.class, userId);
         } catch (HttpClientErrorException.Unauthorized e) {
             logger.warn("Unauthorized access to /users/{userId}/buttons: " + e.getMessage());
             throw new RestAPI.Unauthorized();
