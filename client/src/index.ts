@@ -10,6 +10,8 @@ import Symbols = interfaces.Symbols;
 import { AppPresenter } from "./presentation/AppPresenter";
 import { AppPresenterImpl } from "./presentation/impl/AppPresenterImpl";
 import { OverlayView } from "./rail/OverlayView";
+import { MainPagePresenterImpl } from "./presentation/impl/MainPagePresenterImpl";
+import { MainPagePresenter } from "./presentation/MainPagePresenter";
 
 export default class Extension implements IExtension {
     public async init(init: IExtensionInit, registry: IRegistry) {
@@ -32,6 +34,7 @@ export default class Extension implements IExtension {
 
             const appPresenter = new AppPresenterImpl(tracker);
             container.bind(AppPresenter.TypeTag).to(appPresenter);
+            container.bind(MainPagePresenter.TypeTag).toFactory(() => new MainPagePresenterImpl(tracker));
 
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             rail.register(new RailItem(tracker, appPresenter));

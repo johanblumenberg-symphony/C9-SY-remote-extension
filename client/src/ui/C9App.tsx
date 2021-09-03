@@ -12,12 +12,16 @@ class C9App extends ConnectedComponent<WithStyles<typeof styles>> {
         this._app.hide();
     }
 
+    private _stopPropagation = (event: React.MouseEvent) => {
+        event.stopPropagation();
+    }
+
     render() {
         const { classes } = this.props;
 
         return (
             <div onClick={ this._hide } className={ classes.root }>
-                <div className={ classes.app }>
+                <div className={ classes.app } onClick={ this._stopPropagation }>
                     <MainView />
                 </div>
             </div>

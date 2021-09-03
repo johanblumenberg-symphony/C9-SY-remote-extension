@@ -449,6 +449,13 @@
     "@babel/runtime" "^7.2.0"
     recompose "0.28.0 - 0.30.0"
 
+"@material-ui/icons@^4.11.2":
+  version "4.11.2"
+  resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/@material-ui/icons/-/icons-4.11.2.tgz#b3a7353266519cd743b6461ae9fdfcb1b25eb4c5"
+  integrity sha1-s6c1MmZRnNdDtkYa6f38sbJetMU=
+  dependencies:
+    "@babel/runtime" "^7.4.4"
+
 "@material-ui/styles@^4.11.4":
   version "4.11.4"
   resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/@material-ui/styles/-/styles-4.11.4.tgz#eb9dfccfcc2d208243d986457dff025497afa00d"
@@ -699,7 +706,7 @@
   resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/@symphony/rtc-memoize/-/@symphony/rtc-memoize-1.0.6.tgz#00809e968850b7ef5f51944d23fe0fce4f0552f1"
   integrity sha1-AICelohQt+9fUZRNI/4Pzk8FUvE=
 
-"@symphony/rtc-react-state@/Users/johan.blumenberg/code/SFE-RTC/packages/react-state/":
+"@symphony/rtc-react-state@file:../../SFE-RTC/packages/react-state":
   version "1.0.0-automatic"
   dependencies:
     "@symphony/rtc-memoize" "~1.0.0 || 1.0.0-automatic"

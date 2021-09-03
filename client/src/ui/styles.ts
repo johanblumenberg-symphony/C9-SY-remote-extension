@@ -1,5 +1,10 @@
 import { createStyles } from '@material-ui/core/styles';
 
+const BACKGROUND_DARK = 'rgb(12, 17, 24)';
+const BACKGROUND_LIGHT = 'rgb(28, 39, 60)';
+const TEXT_DARK = 'rgb(47, 76, 125)';
+const TEXT_LIGHT = 'rgb(255, 255, 255)';
+
 export const styles = () => createStyles({
     root: {
         position: 'absolute',
@@ -11,7 +16,7 @@ export const styles = () => createStyles({
     },
     app: {
         display: 'inline-flex',
-        backgroundColor: 'rgb(12, 17, 24)',
+        backgroundColor: BACKGROUND_DARK,
 
         animation: '$slide-in .5s ease-out',
     },
@@ -23,11 +28,11 @@ export const styles = () => createStyles({
 
     rows: {
         display: 'flex',
-        flexFlow: 'row',
+        flexFlow: 'column',
     },
     columns: {
         display: 'flex',
-        flexFlow: 'col',
+        flexFlow: 'row',
     },
 
     button: {
@@ -36,15 +41,15 @@ export const styles = () => createStyles({
         height: 73,
         margin: 3,
 
-        backgroundColor: 'rgb(28, 39, 60)',
-        borderColor: 'rgb(28, 39, 60)',
+        backgroundColor: BACKGROUND_LIGHT,
+        borderColor: BACKGROUND_LIGHT,
         borderStyle: 'solid',
         borderWidth: 1,
 
         '&$empty': {
             borderStyle: 'dashed',
-            color: 'rgb(28, 39, 60)',
-            backgroundColor: 'rgb(12, 17, 24)',
+            color: TEXT_DARK,
+            backgroundColor: BACKGROUND_DARK,
             justifyContent: 'center',
             alignItems: 'center',
         },
@@ -53,7 +58,31 @@ export const styles = () => createStyles({
     empty: { },
 
     buttonLabel: {
-        color: 'white',
+        color: TEXT_LIGHT,
         margin: 5,
-    }
+    },
+
+    header: {
+        display: 'flex',
+        backgroundColor: BACKGROUND_LIGHT,
+        color: TEXT_LIGHT,
+        margin: 3,
+        padding: 3,
+        width: 1, // Same width on all headers, flex-grow makes sure they grow to the correct size
+        flexGrow: 1,
+    },
+
+    headerText: {
+        flexGrow: 1,
+        textAlign: 'center',
+    },
+
+    headerIcon: {
+        marginLeft: -4,
+        marginRight: -4,
+
+        '&:hover': {
+            color: TEXT_DARK,
+        }
+    },
 });

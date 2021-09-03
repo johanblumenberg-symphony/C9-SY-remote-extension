@@ -85,7 +85,8 @@
             "@symphony/rtc-presenter-root/dist/testing",
             "@symphony/rtc-meet/dist/**",
             "@symphony-ui/uitoolkit-components/styles",
-            "@material-ui/core/**"
+            "@material-ui/core/**",
+            "@material-ui/icons/**"
         ] } ],
         "import/no-self-import": "error",
         "import/no-unresolved": "error",
