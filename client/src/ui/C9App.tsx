@@ -1,19 +1,22 @@
 import * as React from 'react';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
-
 import { styles } from './styles';
 import MainView from './main/MainView';
+import { ConnectedComponent } from '@symphony/rtc-react-state';
+import { AppPresenter } from '../presentation/AppPresenter';
 
-export interface Actions {
-    onHide(): void;
-}
+class C9App extends ConnectedComponent<WithStyles<typeof styles>> {
+    private _app = this.context.get(AppPresenter.TypeTag);
 
-class C9App extends React.PureComponent<Actions & WithStyles<typeof styles>> {
+    private _hide = () => {
+        this._app.hide();
+    }
+
     render() {
         const { classes } = this.props;
 
         return (
-            <div onClick={ this.props.onHide } className={ classes.root }>
+            <div onClick={ this._hide } className={ classes.root }>
                 <div className={ classes.app }>
                     <MainView />
                 </div>

@@ -47,8 +47,13 @@ export const styles = () => createStyles({
             backgroundColor: 'rgb(12, 17, 24)',
             justifyContent: 'center',
             alignItems: 'center',
-        }
+        },
     },
 
-    empty: { }
+    empty: { },
+
+    buttonLabel: {
+        color: 'white',
+        margin: 5,
+    }
 });

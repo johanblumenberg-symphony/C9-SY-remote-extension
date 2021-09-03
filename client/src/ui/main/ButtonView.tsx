@@ -11,11 +11,13 @@ export interface Props {
 
 class ButtonView extends React.PureComponent<WithStyles<typeof styles> & Props> {
     render() {
-        const { classes } = this.props;
+        const { classes, button } = this.props;
 
-        if (this.props.button) {
+        if (button) {
             return (
-                <div className={ classes.button } />
+                <div className={ classes.button }>
+                    <span className={ classes.buttonLabel }>{ button.buttonLabel }</span>
+                </div>
             );
         } else {
             return (

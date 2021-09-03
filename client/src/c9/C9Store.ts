@@ -1,8 +1,15 @@
 import { Button, C9API, User } from "./api";
 import { memoizePromise } from '@symphony/rtc-memoize';
-import { ChangeTracker } from '@symphony/rtc-react-state';
+import { ChangeTracker, makeTag } from '@symphony/rtc-react-state';
 
-export class C9Store {
+export interface C9Store {
+    fetchCurrentUser(): Promise<User>;
+    getCurrentUser(): User | undefined;
+    fetchButtons(): Promise<Button[]>;
+    getButtons(): Button[] | undefined;
+}
+
+export class C9StoreImpl implements C9Store {
     private _currentUser: User;
     private _buttons: Button[];
 
@@ -11,7 +18,7 @@ export class C9Store {
         private _api: C9API,
     ) { }
 
-    public fetchUser = memoizePromise(
+    public fetchCurrentUser = memoizePromise(
         () => this._api.getCurrentUser(),
     ).then(user => {
         this._currentUser = user;
@@ -22,7 +29,7 @@ export class C9Store {
     public getCurrentUser() {
         if (!this._currentUser) {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            this.fetchUser();
+            this.fetchCurrentUser();
         }
         return this._currentUser;
     }
@@ -42,4 +49,8 @@ export class C9Store {
         }
         return this._buttons;
     }
+}
+
+export namespace C9Store {
+    export const TypeTag = makeTag<C9Store>("C9Store");
 }
