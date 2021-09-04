@@ -1,4 +1,4 @@
-package com.symphony.c9proxy.c9;
+package com.symphony.c9proxy.c9mgmt;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -48,12 +48,12 @@ public class C9ManagementAPI {
         }
     };
 
-    public C9ManagementAPI(C9Config config, RestTemplateBuilder restTemplateBuilder)
+    public C9ManagementAPI(C9ManagementConfig config, RestTemplateBuilder restTemplateBuilder)
         throws NoSuchAlgorithmException, InvalidKeyException {
         this.HMAC = Mac.getInstance("HmacSHA512");
         this.HMAC.init(new SecretKeySpec(config.apiSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA512"));
 
-        this.api = restTemplateBuilder.rootUri("https://managementapi.prod1.xhoot.com:443/external/apis")
+        this.api = restTemplateBuilder.rootUri(config.apiRoot)
             .additionalInterceptors(new ClientHttpRequestInterceptor() {
                 @Override
                 public ClientHttpResponse intercept(HttpRequest request, byte[] body,
@@ -130,7 +130,7 @@ public class C9ManagementAPI {
         }
     }
 
-    public Object getRawButtons(Long userId) {
+    public Object getRawButtons(int userId) {
         try {
             return api.postForObject("/users/{userId}/buttons", Map.of(), Object.class, userId);
         } catch (HttpClientErrorException.Unauthorized e) {

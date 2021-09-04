@@ -25,7 +25,7 @@ public class SBEUserAPI {
     public SBEUserAPI(SBEConfig config, RestTemplateBuilder restTemplateBuilder)
         throws NoSuchAlgorithmException, InvalidKeyException {
 
-        this.api = restTemplateBuilder.rootUri(config.rootUri).build();
+        this.api = restTemplateBuilder.rootUri(config.apiRoot).build();
         this.api.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
     }
 

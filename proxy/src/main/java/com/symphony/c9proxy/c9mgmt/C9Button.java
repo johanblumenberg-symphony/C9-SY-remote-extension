@@ -1,4 +1,4 @@
-package com.symphony.c9proxy.c9;
+package com.symphony.c9proxy.c9mgmt;
 
 import lombok.Data;
 

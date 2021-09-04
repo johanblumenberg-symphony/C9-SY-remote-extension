@@ -4,5 +4,10 @@
 
 c9.management.apiKey = <API_KEY>
 c9.management.apiSecret = <API_SECRET>
+c9.management.apiRoot = https://...
 
-sbe.rootUri = https://<POD>.symphony.com
+c9.cti.apiKey = <API_KEY>
+c9.cti.apiSecret = <API_SECRET>
+c9.cti.apiRoot = wss://...
+
+sbe.apiRoot = https://<POD>.symphony.com

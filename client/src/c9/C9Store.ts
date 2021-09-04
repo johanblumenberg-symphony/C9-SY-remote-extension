@@ -7,6 +7,9 @@ export interface C9Store {
     getCurrentUser(): User | undefined;
     fetchButtons(): Promise<Button[]>;
     getButtons(): Button[] | undefined;
+
+    initiateCall(connectionNumber: string): void;
+    releaseCall(connectionNumber: string): void;
 }
 
 export class C9StoreImpl implements C9Store {
@@ -48,6 +51,16 @@ export class C9StoreImpl implements C9Store {
             this.fetchButtons();
         }
         return this._buttons;
+    }
+
+    public initiateCall(connectionNumber: string) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        this._api.initiateCall(connectionNumber);
+    }
+
+    public releaseCall(connectionNumber: string) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        this._api.releaseCall(connectionNumber);
     }
 }
 

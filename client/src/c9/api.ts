@@ -49,7 +49,7 @@ export class C9API {
     constructor(private _http: Http) { }
 
     public async getCurrentUser(): Promise<User> {
-        const res = await this._http.get<UsersResponse>('/cloud9/api/v1/user');
+        const res = await this._http.get<UsersResponse>('/cloud9/api/v1/mgmt/user');
 
         if (res.ok) {
             return res.data.users[0];
@@ -61,11 +61,27 @@ export class C9API {
     }
 
     public async getUserButtons(): Promise<Button[]> {
-        const res = await this._http.get<ButtonsResponse>(`/cloud9/api/v1/buttons`);
+        const res = await this._http.get<ButtonsResponse>(`/cloud9/api/v1/mgmt/buttons`);
 
         if (res.ok) {
             return res.data.buttons;
         } else {
+            throw new HttpError(res);
+        }
+    }
+
+    public async initiateCall(connectionNumber: string) {
+        const res = await this._http.postJson(`/cloud9/api/v1/cti/${connectionNumber}/initiate`, {});
+
+        if (!res.ok) {
+            throw new HttpError(res);
+        }
+    }
+
+    public async releaseCall(connectionNumber: string) {
+        const res = await this._http.postJson(`/cloud9/api/v1/cti/${connectionNumber}/release`, {});
+
+        if (!res.ok) {
             throw new HttpError(res);
         }
     }

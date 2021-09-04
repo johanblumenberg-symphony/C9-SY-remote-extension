@@ -1,4 +1,4 @@
-package com.symphony.c9proxy.c9;
+package com.symphony.c9proxy.c9mgmt;
 
 import lombok.Data;
 
@@ -17,6 +17,6 @@ public class C9User {
     }
     
     private String userName;
-    private long userId;
+    private int userId;
     private PersonalSettings personalSettings;
 }
