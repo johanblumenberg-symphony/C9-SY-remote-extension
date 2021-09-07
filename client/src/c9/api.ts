@@ -45,6 +45,48 @@ interface ButtonsResponse {
     buttons: Button[];
 }
 
+export interface SessionCreated {
+    session: string;
+}
+
+export interface CallStatus {
+    callId: string;
+    userId: number;
+    timestamp: string;
+    farEndNumber: string[];
+    buttonId: number;
+    buttonLabel: string;
+    nearEndNumber: string;
+    nearEndNumberInstance: string;
+    callStatusCode: number;
+    statusChangeCode: number;
+    nearEndReleased: boolean;
+    milliDuration: number;
+
+    callProperties: {
+        userMicOn: boolean;
+    }
+    device: string;
+    farEnd: {};
+    nearEnd: {};
+    snapshot: boolean;
+}
+
+export interface CallStatusMessage {
+    messageType: 'callStatus';
+    messageBody: CallStatus;
+}
+
+export interface CallStatusSnapshotMessage {
+    messageType: 'callStatusSnapshot';
+    messageBody: {
+        userId: number;
+        callStatusList: CallStatus[];
+    }
+}
+
+export type SessionMessage = CallStatusMessage | CallStatusSnapshotMessage;
+
 export class C9API {
     constructor(private _http: Http) { }
 
@@ -82,6 +124,26 @@ export class C9API {
         const res = await this._http.postJson(`/cloud9/api/v1/cti/${connectionNumber}/release`, {});
 
         if (!res.ok) {
+            throw new HttpError(res);
+        }
+    }
+
+    public async createSession() {
+        const res = await this._http.postJson<SessionCreated>('/cloud9/api/v1/cti/status', {});
+
+        if (res.ok) {
+            return res.data;
+        } else {
+            throw new HttpError(res);
+        }
+    }
+
+    public async poll(session: string) {
+        const res = await this._http.get<SessionMessage>(`/cloud9/api/v1/cti/status?session=${session}`);
+
+        if (res.ok) {
+            return res.data;
+        } else {
             throw new HttpError(res);
         }
     }

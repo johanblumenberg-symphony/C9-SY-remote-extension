@@ -89,7 +89,7 @@ public class CTIConnector implements IEventListener {
     public void onCallStatus(CallStatus status) {
         @Data
         final class CallStatusMessage {
-            private final ApiMessageType messageType = ApiMessageType.EVENT_CALL_STATUS;
+            private final String messageType = ApiMessageType.EVENT_CALL_STATUS.getLabel();
             private final CallStatus messageBody;
         }
 
@@ -103,7 +103,7 @@ public class CTIConnector implements IEventListener {
     public void onCallStatuses(int userId, List<CallStatus> callStatusList) {
         @Data
         final class CallStatusSnapshotMessage {
-            private final ApiMessageType messageType = ApiMessageType.REQUEST_CALL_STATUS_SNAPSHOT;
+            private final String messageType = ApiMessageType.REQUEST_CALL_STATUS_SNAPSHOT.getLabel();
             private final CallStatusSnapshot messageBody;
         }
 

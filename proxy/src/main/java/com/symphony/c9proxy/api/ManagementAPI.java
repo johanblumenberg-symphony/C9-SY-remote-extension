@@ -78,7 +78,7 @@ public class ManagementAPI {
 
     @Data
     private static class SessionCreated {
-        private final String sessionId;
+        private final String session;
     }
     
     @PostMapping("/cti/status")

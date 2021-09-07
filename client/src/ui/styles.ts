@@ -4,6 +4,8 @@ const BACKGROUND_DARK = 'rgb(12, 17, 24)';
 const BACKGROUND_LIGHT = 'rgb(28, 39, 60)';
 const TEXT_DARK = 'rgb(47, 76, 125)';
 const TEXT_LIGHT = 'rgb(255, 255, 255)';
+const BACKGROUND_CALLING = 'rgb(9, 145, 78)';
+const BORDER_CALLING = 'rgb(28, 173, 101)';
 
 export const styles = () => createStyles({
     root: {
@@ -54,9 +56,15 @@ export const styles = () => createStyles({
             justifyContent: 'center',
             alignItems: 'center',
         },
+
+        '&$userMicOn': {
+            backgroundColor: BACKGROUND_CALLING,
+            borderColor: BORDER_CALLING,
+        }
     },
 
     empty: { },
+    userMicOn: {},
 
     buttonLabel: {
         color: TEXT_LIGHT,
