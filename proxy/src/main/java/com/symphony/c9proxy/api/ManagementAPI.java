@@ -9,15 +9,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import com.c9tec.external.apis.samples.common.exceptions.ApiException;
 import com.c9tec.external.apis.samples.common.exceptions.SignatureException;
 import com.c9tec.external.apis.samples.cti.domain.events.parts.FarEndType;
+import com.symphony.c9proxy.api.RestAPI.Cancelled;
+import com.symphony.c9proxy.api.RestAPI.NotFound;
+import com.symphony.c9proxy.api.StatusSession.MessageSender;
 import com.symphony.c9proxy.c9cti.CTIConnector;
 import com.symphony.c9proxy.c9mgmt.C9ManagementAPI;
 import com.symphony.c9proxy.c9mgmt.C9User;
 import com.symphony.c9proxy.sbe.SBEUser;
 import com.symphony.c9proxy.sbe.SBEUserAPI;
+
+import lombok.Data;
 
 @RestController()
 public class ManagementAPI {
@@ -29,6 +35,9 @@ public class ManagementAPI {
 
     @Autowired
     private CTIConnector ctiApi;
+
+    @Autowired
+    private SessionStore sessions;
 
     @GetMapping("/mgmt/user")
     public Object getUser(
@@ -64,6 +73,63 @@ public class ManagementAPI {
         @PathVariable("farEndNumber") String farEndNumber) throws ApiException, SignatureException {
         SBEUser sbeUser = sbeApi.getUser(csrfToken, cookies);
         C9User c9User = c9Api.getUserByEmail(sbeUser.getEmailAddress());
-        ctiApi.releaseCall(FarEndType.C9_REF_NUM,farEndNumber, c9User.getUserId());
+        ctiApi.releaseCall(FarEndType.C9_REF_NUM, farEndNumber, c9User.getUserId());
+    }
+
+    @Data
+    private static class SessionCreated {
+        private final String sessionId;
+    }
+    
+    @PostMapping("/cti/status")
+    public SessionCreated createStatusSession(
+        @RequestHeader("x-symphony-csrf-token") String csrfToken,
+        @RequestHeader("cookie") List<String> cookies) throws ApiException, SignatureException {
+        SBEUser sbeUser = sbeApi.getUser(csrfToken, cookies);
+        C9User c9User = c9Api.getUserByEmail(sbeUser.getEmailAddress());
+
+        StatusSession session = sessions.create(c9User.getUserId());
+
+        ctiApi.requestUsersCallStatus();
+        
+        return new SessionCreated(session.getSessionId());
+    }
+
+    @GetMapping("/cti/status")
+    public DeferredResult<Object> getStatusMessages(
+        @RequestHeader("x-symphony-csrf-token") String csrfToken,
+        @RequestHeader("cookie") List<String> cookies,
+        @RequestParam("session") String sessionId) throws ApiException, SignatureException {
+        SBEUser sbeUser = sbeApi.getUser(csrfToken, cookies);
+        C9User c9User = c9Api.getUserByEmail(sbeUser.getEmailAddress());
+
+        StatusSession session = sessions.getSession(sessionId, c9User.getUserId());
+        DeferredResult<Object> result = new DeferredResult<>(20000L);
+
+        if (session != null) {
+            MessageSender c = new MessageSender() {
+                @Override
+                public void send(Object message) {
+                    result.setResult(message);
+                }
+
+                @Override
+                public void cancel() {
+                    result.setErrorResult(new Cancelled());
+                }
+            };
+
+            session.addConsumer(c);
+
+            result.onTimeout(() -> {
+                if (session.cancelConsumer(c)) {
+                    result.setResult(null);
+                }
+            });
+        } else {
+            result.setErrorResult(new NotFound());
+        }
+
+        return result;
     }
 }

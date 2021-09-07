@@ -25,6 +25,14 @@ public class RestAPI {
         }
     }
 
+    public static class Cancelled extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        public Cancelled() {
+            super("Cancelled");
+        }
+    }
+
     @ControllerAdvice
     public static class GlobalExceptionHandler {
         @ExceptionHandler(Unauthorized.class)
