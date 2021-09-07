@@ -18,7 +18,7 @@ export const styles = () => createStyles({
         display: 'inline-flex',
         backgroundColor: BACKGROUND_DARK,
 
-        animation: '$slide-in .5s ease-out',
+        animation: '$slide-in .3s ease-in-out',
     },
 
     '@keyframes slide-in': {
@@ -45,6 +45,7 @@ export const styles = () => createStyles({
         borderColor: BACKGROUND_LIGHT,
         borderStyle: 'solid',
         borderWidth: 1,
+        borderRadius: 2,
 
         '&$empty': {
             borderStyle: 'dashed',
@@ -66,6 +67,7 @@ export const styles = () => createStyles({
         display: 'flex',
         backgroundColor: BACKGROUND_LIGHT,
         color: TEXT_LIGHT,
+        borderRadius: 4,
         margin: 3,
         padding: 3,
         width: 1, // Same width on all headers, flex-grow makes sure they grow to the correct size
