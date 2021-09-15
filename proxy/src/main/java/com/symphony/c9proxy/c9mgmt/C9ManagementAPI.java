@@ -118,6 +118,25 @@ public class C9ManagementAPI {
         }
     }
 
+    @Data
+    private static class ButtonsResponse {
+        private String version;
+        private List<C9Button> buttons;
+    }
+
+    public List<C9Button> getButtons(int userId) {
+        try {
+            ButtonsResponse response = api.postForObject("/users/{userId}/buttons", Map.of(), ButtonsResponse.class, userId);
+            return response.getButtons();
+        } catch (HttpClientErrorException.Unauthorized e) {
+            logger.warn("Unauthorized access to /users/{userId}/buttons: " + e.getMessage());
+            throw new RestAPI.Unauthorized();
+        } catch (HttpClientErrorException.NotFound e) {
+            logger.warn("Not found accessing /users/{userId}/buttons: " + e.getMessage());
+            throw new RestAPI.NotFound();
+        }
+    }
+
     public Object getRawUserByEmail(String email) {
         try {
             return api.postForObject("/users", Map.of("emails", List.of(email)), Object.class);
@@ -145,6 +164,18 @@ public class C9ManagementAPI {
     public Object getRawConnectionsForGroup(int groupId) {
         try {
             return api.postForObject("/connections", Map.of("groupId", groupId), Object.class);
+        } catch (HttpClientErrorException.Unauthorized e) {
+            logger.warn("Unauthorized access to /connections: " + e.getMessage());
+            throw new RestAPI.Unauthorized();
+        } catch (HttpClientErrorException.NotFound e) {
+            logger.warn("Not found accessing /connections: " + e.getMessage());
+            throw new RestAPI.NotFound();
+        }        
+    }
+
+    public Object getRawConnections(List<String> connectionNumbers) {
+        try {
+            return api.postForObject("/connections", Map.of("connectionNumbers", connectionNumbers), Object.class);
         } catch (HttpClientErrorException.Unauthorized e) {
             logger.warn("Unauthorized access to /connections: " + e.getMessage());
             throw new RestAPI.Unauthorized();

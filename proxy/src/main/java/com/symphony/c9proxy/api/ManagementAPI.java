@@ -1,6 +1,7 @@
 package com.symphony.c9proxy.api;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import com.symphony.c9proxy.api.RestAPI.Cancelled;
 import com.symphony.c9proxy.api.RestAPI.NotFound;
 import com.symphony.c9proxy.api.StatusSession.MessageSender;
 import com.symphony.c9proxy.c9cti.CTIConnector;
+import com.symphony.c9proxy.c9mgmt.C9Button;
 import com.symphony.c9proxy.c9mgmt.C9ManagementAPI;
 import com.symphony.c9proxy.c9mgmt.C9User;
 import com.symphony.c9proxy.sbe.SBEUser;
@@ -69,11 +71,11 @@ public class ManagementAPI {
     @GetMapping("/mgmt/connections")
     public Object getConnetions(
         @RequestHeader("x-symphony-csrf-token") String csrfToken,
-        @RequestHeader("cookie") List<String> cookies,
-        @RequestParam("groupId") int groupId) {
-        sbeApi.getUser(csrfToken, cookies);
-
-        return c9Api.getRawConnectionsForGroup(groupId);
+        @RequestHeader("cookie") List<String> cookies) {
+        SBEUser sbeUser = sbeApi.getUser(csrfToken, cookies);
+        C9User c9User = c9Api.getUserByEmail(sbeUser.getEmailAddress());
+        List<C9Button> buttons = c9Api.getButtons(c9User.getUserId());
+        return c9Api.getRawConnections(buttons.stream().map(C9Button::getConnectionNumber).collect(Collectors.toList()));
     }
 
     @PostMapping("/cti/{farEndNumber}/initiate")

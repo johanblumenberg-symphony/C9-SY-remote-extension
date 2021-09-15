@@ -61,10 +61,16 @@ export class C9StoreImpl implements C9Store {
         return this._buttons;
     }
 
-    private _fetchConnectionsForGroup = memoizePromiseId(
-        (groupId: string) => this._api.getConnectionsByGroup(parseInt(groupId)),
-    ).then((_groupId, connections) => {
+    private _fetchConnections = memoizePromise(
+        () => this._api.getConnections(),
+    ).then((connections) => {
         return connections;
+    });
+
+    private _fetchUserByEmail = memoizePromiseId(
+        (email: string) => this._api.getUserByEmail(email),
+    ).then((_email: string, user: User) => {
+        return user;
     });
 
     private async _fetchButtonForConnection(connectionNumber: string): Promise<Button | undefined> {
@@ -74,14 +80,14 @@ export class C9StoreImpl implements C9Store {
 
     public async fetchButtonForRemoteUser(user: interfaces.data.IUser): Promise<Button | undefined> {
         const c9me = await this.fetchCurrentUser();
-        const c9user = await this._api.getUserByEmail(user.email);
-        const connections = await this._fetchConnectionsForGroup(c9me.personalSettings.groupIds[0].toString());
+        const c9user = await this._fetchUserByEmail(user.email);
+        const connections = await this._fetchConnections();
 
         if (c9user) {
             const firmId = c9me.personalSettings.firmId;
             for (const c of connections) {
-                if (c.farEnd.firmID === firmId && c.nearEnd.firmID === firmId) {
-                    const userIds = [...c.farEnd.userIds, ...c.nearEnd.userIds];
+                if ((!c.farEnd || (c.farEnd.firmID === firmId)) && (c.nearEnd.firmID === firmId)) {
+                    const userIds = [...c.farEnd?.userIDs || [], ...c.nearEnd?.userIDs || []];
                     if (userIds.length === 2 && userIds.includes(c9me.userId) && userIds.includes(c9user.userId)) {
                         return this._fetchButtonForConnection(c.connectionNumber);
                     }

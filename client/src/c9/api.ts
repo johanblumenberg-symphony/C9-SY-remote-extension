@@ -41,13 +41,13 @@ export interface Connection {
     connectionNumber: string;
     connectionType: 'Shoutdown';
     createdOn: string;
-    farEnd: {
+    farEnd?: {
         firmID: number;
-        userIds: number[];
+        userIDs?: number[];
     }
     nearEnd: {
         firmID: number;
-        userIds: number[];
+        userIDs: number[];
     }
 }
 
@@ -146,8 +146,8 @@ export class C9API {
         }
     }
 
-    public async getConnectionsByGroup(groupId: number) {
-        const res = await this._http.get<ConnectionsResponse>(`/cloud9/api/v1/mgmt/connections?groupId=${groupId}`);
+    public async getConnections() {
+        const res = await this._http.get<ConnectionsResponse>('/cloud9/api/v1/mgmt/connections');
 
         if (res.ok) {
             return res.data.connections;

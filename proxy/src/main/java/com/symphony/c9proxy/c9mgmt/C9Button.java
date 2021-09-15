@@ -9,6 +9,4 @@ public class C9Button {
     private String connectionNumber;
     private long connectionId;
     private long connectionInstanceId;
-    private long extensionId;
-    private long speakerPosition;
 }
