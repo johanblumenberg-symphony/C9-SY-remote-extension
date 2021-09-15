@@ -140,6 +140,17 @@ public class C9ManagementAPI {
             logger.warn("Not found accessing /users/{userId}/buttons: " + e.getMessage());
             throw new RestAPI.NotFound();
         }
-
+    }
+    
+    public Object getRawConnectionsForGroup(int groupId) {
+        try {
+            return api.postForObject("/connections", Map.of("groupId", groupId), Object.class);
+        } catch (HttpClientErrorException.Unauthorized e) {
+            logger.warn("Unauthorized access to /connections: " + e.getMessage());
+            throw new RestAPI.Unauthorized();
+        } catch (HttpClientErrorException.NotFound e) {
+            logger.warn("Not found accessing /connections: " + e.getMessage());
+            throw new RestAPI.NotFound();
+        }        
     }
 }

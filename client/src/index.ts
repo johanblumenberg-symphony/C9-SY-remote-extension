@@ -12,12 +12,15 @@ import { AppPresenterImpl } from "./presentation/impl/AppPresenterImpl";
 import { OverlayView } from "./rail/OverlayView";
 import { MainPagePresenterImpl } from "./presentation/impl/MainPagePresenterImpl";
 import { MainPagePresenter } from "./presentation/MainPagePresenter";
+import { createChatHeaderButtonFactory } from "./chatheader/CallButton";
 
 export default class Extension implements IExtension {
     public async init(init: IExtensionInit, registry: IRegistry) {
         const rail = await registry.resolve<interfaces.rail.IRail>(Symbols.IRail);
         const overlay = await registry.resolve<interfaces.windowOverlay.IWindowOverlayService>(Symbols.IWindowOverlay);
         const bootstrap = await registry.resolve<interfaces.data.IBootstrapStore>(Symbols.IBootstrapStore);
+        const chatService = await registry.resolve<interfaces.chatView.IChatViewService>(Symbols.IChatViewService);
+        const userStore = await registry.resolve<interfaces.data.IUserStore>(Symbols.IUserStore);
 
         const tracker = createChangeTracker();
         const container = createObjectStore();
@@ -39,6 +42,8 @@ export default class Extension implements IExtension {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             rail.register(new RailItem(tracker, appPresenter));
             overlay.registerOverlayViewFactory(async () => [new OverlayView(tracker, container, appPresenter)]);
+
+            chatService.registerHeaderButtonFactory(createChatHeaderButtonFactory(tracker, store, userStore));
         } catch (e) {
             if (e.code === 'NOT_FOUND') {
                 console.warn('No corresponding C9 user found');

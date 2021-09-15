@@ -56,6 +56,26 @@ public class ManagementAPI {
         return c9Api.getRawButtons(c9User.getUserId());
     }
 
+    @GetMapping("/mgmt/users")
+    public Object getUsers(
+        @RequestHeader("x-symphony-csrf-token") String csrfToken,
+        @RequestHeader("cookie") List<String> cookies,
+        @RequestParam("email") String email) {
+        sbeApi.getUser(csrfToken, cookies);
+
+        return c9Api.getRawUserByEmail(email);
+    }
+
+    @GetMapping("/mgmt/connections")
+    public Object getConnetions(
+        @RequestHeader("x-symphony-csrf-token") String csrfToken,
+        @RequestHeader("cookie") List<String> cookies,
+        @RequestParam("groupId") int groupId) {
+        sbeApi.getUser(csrfToken, cookies);
+
+        return c9Api.getRawConnectionsForGroup(groupId);
+    }
+
     @PostMapping("/cti/{farEndNumber}/initiate")
     public void initiateCall(
         @RequestHeader("x-symphony-csrf-token") String csrfToken,

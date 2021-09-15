@@ -1,12 +1,14 @@
 import { Button, C9API, CallStatus, User } from "./api";
-import { memoizePromise } from '@symphony/rtc-memoize';
+import { memoizePromise, memoizePromiseId } from '@symphony/rtc-memoize';
 import { ChangeTracker, makeTag } from '@symphony/rtc-react-state';
+import { interfaces } from '@mana/extension-lib';
 
 export interface C9Store {
     fetchCurrentUser(): Promise<User>;
     getCurrentUser(): User | undefined;
     fetchButtons(): Promise<Button[]>;
     getButtons(): Button[] | undefined;
+    fetchButtonForRemoteUser(_user: interfaces.data.IUser): Promise<Button | undefined>;
 
     initiateCall(connectionNumber: string): void;
     releaseCall(connectionNumber: string): void;
@@ -57,6 +59,37 @@ export class C9StoreImpl implements C9Store {
             this.fetchButtons();
         }
         return this._buttons;
+    }
+
+    private _fetchConnectionsForGroup = memoizePromiseId(
+        (groupId: string) => this._api.getConnectionsByGroup(parseInt(groupId)),
+    ).then((_groupId, connections) => {
+        return connections;
+    });
+
+    private async _fetchButtonForConnection(connectionNumber: string): Promise<Button | undefined> {
+        const buttons = await this.fetchButtons();
+        return buttons.find(b => b.connectionNumber === connectionNumber);
+    }
+
+    public async fetchButtonForRemoteUser(user: interfaces.data.IUser): Promise<Button | undefined> {
+        const c9me = await this.fetchCurrentUser();
+        const c9user = await this._api.getUserByEmail(user.email);
+        const connections = await this._fetchConnectionsForGroup(c9me.personalSettings.groupIds[0].toString());
+
+        if (c9user) {
+            const firmId = c9me.personalSettings.firmId;
+            for (const c of connections) {
+                if (c.farEnd.firmID === firmId && c.nearEnd.firmID === firmId) {
+                    const userIds = [...c.farEnd.userIds, ...c.nearEnd.userIds];
+                    if (userIds.length === 2 && userIds.includes(c9me.userId) && userIds.includes(c9user.userId)) {
+                        return this._fetchButtonForConnection(c.connectionNumber);
+                    }
+                }
+            }
+        }
+
+        return undefined;
     }
 
     public initiateCall(connectionNumber: string) {

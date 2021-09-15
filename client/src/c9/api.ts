@@ -16,11 +16,13 @@ export interface User {
     userName: string;
     userId: number;
     personalSettings: {
+        firmId: number;
         firstName: string;
         lastName: string;
         contact: {
             email: string;
         }
+        groupIds: number[];
     }
 }
 
@@ -34,6 +36,21 @@ export interface Button {
     speakerPosition: number;
 }
 
+export interface Connection {
+    connectionID: number;
+    connectionNumber: string;
+    connectionType: 'Shoutdown';
+    createdOn: string;
+    farEnd: {
+        firmID: number;
+        userIds: number[];
+    }
+    nearEnd: {
+        firmID: number;
+        userIds: number[];
+    }
+}
+
 interface UsersResponse {
     versioin: string,
     totalUsers: number,
@@ -43,6 +60,11 @@ interface UsersResponse {
 interface ButtonsResponse {
     version: string;
     buttons: Button[];
+}
+
+interface ConnectionsResponse {
+    version: string;
+    connections: Connection[];
 }
 
 export interface SessionCreated {
@@ -107,6 +129,28 @@ export class C9API {
 
         if (res.ok) {
             return res.data.buttons;
+        } else {
+            throw new HttpError(res);
+        }
+    }
+
+    public async getUserByEmail(email: string): Promise<User | undefined> {
+        const res = await this._http.get<UsersResponse>(`/cloud9/api/v1/mgmt/users?email=${encodeURIComponent(email)}`);
+
+        if (res.ok) {
+            return res.data.users[0];
+        } else if (res.status === 404) {
+            return undefined;
+        } else {
+            throw new HttpError(res);
+        }
+    }
+
+    public async getConnectionsByGroup(groupId: number) {
+        const res = await this._http.get<ConnectionsResponse>(`/cloud9/api/v1/mgmt/connections?groupId=${groupId}`);
+
+        if (res.ok) {
+            return res.data.connections;
         } else {
             throw new HttpError(res);
         }
