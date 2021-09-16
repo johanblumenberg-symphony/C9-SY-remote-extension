@@ -83,7 +83,13 @@ export const styles = () => createStyles({
         fontWeight: 'bold',
     },
 
-    buttonName: {
+    buttonName: { },
+    buttonNameLink: {
+        color: TEXT_LIGHT,
+
+        '&:hover': {
+            textDecoration: 'underline',
+        }
     },
     buttonNames: {
         color: TEXT_LIGHT,

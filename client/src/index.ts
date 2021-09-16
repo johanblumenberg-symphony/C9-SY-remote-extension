@@ -21,6 +21,7 @@ export default class Extension implements IExtension {
         const bootstrap = await registry.resolve<interfaces.data.IBootstrapStore>(Symbols.IBootstrapStore);
         const chatService = await registry.resolve<interfaces.chatView.IChatViewService>(Symbols.IChatViewService);
         const userStore = await registry.resolve<interfaces.data.IUserStore>(Symbols.IUserStore);
+        const userProfile = await registry.resolve<any>(Symbols.IProfilePageModalService);
 
         const tracker = createChangeTracker();
         const container = createObjectStore();
@@ -29,13 +30,13 @@ export default class Extension implements IExtension {
             .chain(addHeader('X-Symphony-CSRF-Token', () => bootstrap.getCSRFToken()));
 
         const api = new C9API(http);
-        const store = new C9StoreImpl(tracker, api);
+        const store = new C9StoreImpl(tracker, api, userStore);
         container.bind(C9Store.TypeTag).to(store);
 
         try {
             await store.fetchButtons();
 
-            const appPresenter = new AppPresenterImpl(tracker);
+            const appPresenter = new AppPresenterImpl(tracker, userProfile);
             container.bind(AppPresenter.TypeTag).to(appPresenter);
             container.bind(MainPagePresenter.TypeTag).toFactory(() => new MainPagePresenterImpl(tracker));
 

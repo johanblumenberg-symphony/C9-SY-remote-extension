@@ -6,19 +6,29 @@ export class AppPresenterImpl implements AppPresenter {
 
     constructor(
         private _tracker: ChangeTracker,
+        private _userProfile: any,
     ) { }
 
     public open() {
-        this._open = true;
-        this._tracker.post();
+        if (!this._open) {
+            this._open = true;
+            this._tracker.post();
+        }
     }
 
     public hide() {
-        this._open = false;
-        this._tracker.post();
+        if (this._open) {
+            this._open = false;
+            this._tracker.post();
+        }
     }
 
     public isOpen() {
         return this._open;
+    }
+
+    public showSymUserProfile(userId: string) {
+        this.hide();
+        this._userProfile.show(userId);
     }
 }

@@ -4,6 +4,8 @@ export interface AppPresenter {
     isOpen(): boolean;
     open(): void;
     hide(): void;
+
+    showSymUserProfile(userId: string): void;
 }
 
 export namespace AppPresenter {

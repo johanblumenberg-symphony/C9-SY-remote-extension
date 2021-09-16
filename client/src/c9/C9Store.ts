@@ -11,6 +11,9 @@ export interface C9Store {
     fetchButtonForRemoteUser(_user: interfaces.data.IUser): Promise<Button | undefined>;
     getRemoteUsers(connectionNumber: string): User[] | undefined;
 
+    getSymphonyUser(userId: number): interfaces.data.IUser | undefined;
+    fetchSymphonyUser(userId: number): Promise<interfaces.data.IUser | undefined>;
+
     initiateCall(connectionNumber: string): void;
     releaseCall(connectionNumber: string): void;
 
@@ -27,10 +30,12 @@ export class C9StoreImpl implements C9Store {
     private _buttons: Button[];
     private _calls: CallStatus[] = [];
     private _remoteUsersByConnection: { [connectionNumber: string]: User[] } = {};
+    private _symUsers: { [userId: number]: interfaces.data.IUser } = {};
 
     constructor(
         private _tracker: ChangeTracker,
         private _api: C9API,
+        private _userStore: interfaces.data.IUserStore,
     ) {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this._poll();
@@ -72,7 +77,7 @@ export class C9StoreImpl implements C9Store {
         ((userId: number) => this._api.getUser(userId)) as any as (userId: string) => Promise<User>,
     ).then((_userId, user) => {
         return user;
-    });
+    }) as any as (userId: number) => Promise<User>;
 
     public getRemoteUsers(connectionNumber: string) {
         if (!this._remoteUsersByConnection[connectionNumber]) {
@@ -88,7 +93,7 @@ export class C9StoreImpl implements C9Store {
         const connection = connections.find(c => c.connectionNumber === connectionNumber);
         if (connection) {
             this._remoteUsersByConnection[connectionNumber] = await Promise.all(
-                getUserIds(connection).filter(u => u !== me.userId).map(id => this.fetchUser(id as any)),
+                getUserIds(connection).filter(u => u !== me.userId).map(id => this.fetchUser(id)),
             );
             this._tracker.post();
         }
@@ -195,6 +200,31 @@ export class C9StoreImpl implements C9Store {
             }
         }
     }
+
+    public getSymphonyUser(userId: number) {
+        if (!this._symUsers[userId]) {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            this.fetchSymphonyUser(userId);
+        }
+        return this._symUsers[userId];
+    }
+
+    public fetchSymphonyUser = memoizePromiseId(
+        (async (userId: number) => {
+            const user = await this.fetchUser(userId);
+            const users = await this._userStore.searchUsers('', 10, {
+                email: user.personalSettings.contact.email,
+            });
+            return users.items[0];
+
+        }) as any as (userId: string) => Promise<interfaces.data.IUser | undefined>,
+    ).then((userId, symUser) => {
+        if (symUser) {
+            this._symUsers[userId as any as number] = symUser;
+            this._tracker.post();
+        }
+        return symUser;
+    }) as any as (userId: number) => Promise<interfaces.data.IUser | undefined>;
 }
 
 export namespace C9Store {
