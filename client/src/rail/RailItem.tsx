@@ -3,8 +3,9 @@ import { createUpdater } from '@symphony/symphony-rtc/dist/js/utils/createUpdate
 import { createSelector } from '@symphony/symphony-rtc/dist/js/utils/createSelector';
 import { ChangeTracker } from '@symphony/rtc-react-state';
 import { AppPresenter } from '../presentation/AppPresenter';
+import { C9Store } from '../c9/C9Store';
 
-const { RailLocations, RailItemState } = interfaces.rail;
+const { RailLocations, RailItemState, RailItemBadge } = interfaces.rail;
 
 export class RailItem implements interfaces.rail.IRailItem {
     public location: interfaces.rail.RailLocations = RailLocations.top;
@@ -14,6 +15,7 @@ export class RailItem implements interfaces.rail.IRailItem {
 
     constructor(
         private _tracker: ChangeTracker,
+        private _store: C9Store,
         private _app: AppPresenter,
     ) {
         this._tracker.subscribe(this._onChange);
@@ -42,11 +44,13 @@ export class RailItem implements interfaces.rail.IRailItem {
 
     private _getDisplay = createSelector(
         () => this._app.isOpen(),
-        (open) => {
+        () => this._store.getActiveCallCount(),
+        (open, callCount) => {
             return {
                 icon: 'micon',
                 tooltip: 'C9 Remote',
                 state: open ? RailItemState.EXCLUSIVE : RailItemState.PASSIVE,
+                badge: callCount > 0 ? RailItemBadge.PRIMARY : undefined,
             };
         },
     );

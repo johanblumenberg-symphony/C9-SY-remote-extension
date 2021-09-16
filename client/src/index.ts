@@ -40,7 +40,7 @@ export default class Extension implements IExtension {
             container.bind(MainPagePresenter.TypeTag).toFactory(() => new MainPagePresenterImpl(tracker));
 
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            rail.register(new RailItem(tracker, appPresenter));
+            rail.register(new RailItem(tracker, store, appPresenter));
             overlay.registerOverlayViewFactory(async () => [new OverlayView(tracker, container, appPresenter)]);
 
             chatService.registerHeaderButtonFactory(createChatHeaderButtonFactory(tracker, store, userStore));

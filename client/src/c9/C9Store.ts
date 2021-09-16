@@ -14,6 +14,7 @@ export interface C9Store {
     releaseCall(connectionNumber: string): void;
 
     getCallStatus(connectionNumber: string): CallStatus | undefined;
+    getActiveCallCount(): number;
 }
 
 export class C9StoreImpl implements C9Store {
@@ -110,6 +111,10 @@ export class C9StoreImpl implements C9Store {
 
     public getCallStatus(connectionNumber: string) {
         return this._calls.find(c => c.farEndNumber.includes(connectionNumber));
+    }
+
+    public getActiveCallCount(): number {
+        return this._calls.length;
     }
 
     private _applyCallStatus(call: CallStatus) {
