@@ -41,9 +41,11 @@ export const styles = () => createStyles({
 
     button: {
         display: 'flex',
+        flexDirection: 'column',
         width: 226,
         height: 73,
         margin: 3,
+        padding: 4,
 
         backgroundColor: BACKGROUND_LIGHT,
         borderColor: BACKGROUND_LIGHT,
@@ -76,13 +78,25 @@ export const styles = () => createStyles({
 
     buttonLabel: {
         color: TEXT_LIGHT,
-        margin: 5,
+        margin: 1,
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+
+    buttonName: {
+    },
+    buttonNames: {
+        color: TEXT_LIGHT,
+        margin: 1,
+        fontSize: 12,
+        fontWeight: 'normal',
     },
 
     header: {
         display: 'flex',
         backgroundColor: BACKGROUND_LIGHT,
         color: TEXT_LIGHT,
+        fontWeight: 'bold',
         borderRadius: 4,
         margin: 3,
         padding: 3,

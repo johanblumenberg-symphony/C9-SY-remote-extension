@@ -6,6 +6,7 @@ import { Icon } from '@material-ui/core';
 import { connect, ConnectedComponent } from '@symphony/rtc-react-state';
 import { C9Store } from '../../c9/C9Store';
 import classnames from 'classnames';
+import Name from './Name';
 
 export interface Props {
     button: Button | undefined;
@@ -20,6 +21,7 @@ class ButtonView extends ConnectedComponent<WithStyles<typeof styles> & Props> {
 
         return {
             callStatus: button && this._store.getCallStatus(button.connectionNumber),
+            users: button && this._store.getRemoteUsers(button.connectionNumber),
         };
     }
 
@@ -37,7 +39,7 @@ class ButtonView extends ConnectedComponent<WithStyles<typeof styles> & Props> {
 
     render() {
         const { classes, button } = this.props;
-        const { callStatus } = this.depsToState();
+        const { callStatus, users } = this.depsToState();
 
         const classNames = classnames(classes.button, {
             [classes.connectedOutbound]: CallStatus.isConnectedOutbound(callStatus),
@@ -47,7 +49,12 @@ class ButtonView extends ConnectedComponent<WithStyles<typeof styles> & Props> {
         if (button) {
             return (
                 <div className={ classNames } onClick={ this._onClick }>
-                    <span className={ classes.buttonLabel }>{ button.buttonLabel }</span>
+                    <div>
+                        <span className={ classes.buttonLabel }>{ button.buttonLabel }</span>
+                    </div>
+                    <div className={ classes.buttonNames }>
+                        { users?.slice(0, 3).map(u => <Name key={ u.userId } user={ u } />).reduce((acc, cur) => <>{ acc }, { cur }</>) }
+                    </div>
                 </div>
             );
         } else {

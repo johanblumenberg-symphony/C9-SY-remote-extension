@@ -137,6 +137,18 @@ public class C9ManagementAPI {
         }
     }
 
+    public Object getRawUser(int userId) {
+        try {
+            return api.postForObject("/users", Map.of("userIds", List.of(userId)), Object.class);
+        } catch (HttpClientErrorException.Unauthorized e) {
+            logger.warn("Unauthorized access to /users: " + e.getMessage());
+            throw new RestAPI.Unauthorized();
+        } catch (HttpClientErrorException.NotFound e) {
+            logger.warn("Not found accessing /users: " + e.getMessage());
+            throw new RestAPI.NotFound();
+        }
+    }
+
     public Object getRawUserByEmail(String email) {
         try {
             return api.postForObject("/users", Map.of("emails", List.of(email)), Object.class);

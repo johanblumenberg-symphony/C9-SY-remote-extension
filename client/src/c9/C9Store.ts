@@ -1,4 +1,4 @@
-import { Button, C9API, CallStatus, User } from "./api";
+import { Button, C9API, CallStatus, Connection, User } from "./api";
 import { memoizePromise, memoizePromiseId } from '@symphony/rtc-memoize';
 import { ChangeTracker, makeTag } from '@symphony/rtc-react-state';
 import { interfaces } from '@mana/extension-lib';
@@ -9,6 +9,7 @@ export interface C9Store {
     fetchButtons(): Promise<Button[]>;
     getButtons(): Button[] | undefined;
     fetchButtonForRemoteUser(_user: interfaces.data.IUser): Promise<Button | undefined>;
+    getRemoteUsers(connectionNumber: string): User[] | undefined;
 
     initiateCall(connectionNumber: string): void;
     releaseCall(connectionNumber: string): void;
@@ -17,10 +18,15 @@ export interface C9Store {
     getActiveCallCount(): number;
 }
 
+function getUserIds(c: Connection) {
+    return [...c.farEnd?.userIDs || [], ...c.nearEnd?.userIDs || []];
+}
+
 export class C9StoreImpl implements C9Store {
     private _currentUser: User;
     private _buttons: Button[];
     private _calls: CallStatus[] = [];
+    private _remoteUsersByConnection: { [connectionNumber: string]: User[] } = {};
 
     constructor(
         private _tracker: ChangeTracker,
@@ -62,6 +68,32 @@ export class C9StoreImpl implements C9Store {
         return this._buttons;
     }
 
+    public fetchUser = memoizePromiseId(
+        ((userId: number) => this._api.getUser(userId)) as any as (userId: string) => Promise<User>,
+    ).then((_userId, user) => {
+        return user;
+    });
+
+    public getRemoteUsers(connectionNumber: string) {
+        if (!this._remoteUsersByConnection[connectionNumber]) {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            this._fetchRemoteUsers(connectionNumber);
+        }
+        return this._remoteUsersByConnection[connectionNumber];
+    }
+
+    private async _fetchRemoteUsers(connectionNumber: string) {
+        const me = await this.fetchCurrentUser();
+        const connections = await this._fetchConnections();
+        const connection = connections.find(c => c.connectionNumber === connectionNumber);
+        if (connection) {
+            this._remoteUsersByConnection[connectionNumber] = await Promise.all(
+                getUserIds(connection).filter(u => u !== me.userId).map(id => this.fetchUser(id as any)),
+            );
+            this._tracker.post();
+        }
+    }
+
     private _fetchConnections = memoizePromise(
         () => this._api.getConnections(),
     ).then((connections) => {
@@ -88,7 +120,7 @@ export class C9StoreImpl implements C9Store {
             const firmId = c9me.personalSettings.firmId;
             for (const c of connections) {
                 if ((!c.farEnd || (c.farEnd.firmID === firmId)) && (c.nearEnd.firmID === firmId)) {
-                    const userIds = [...c.farEnd?.userIDs || [], ...c.nearEnd?.userIDs || []];
+                    const userIds = getUserIds(c);
                     if (userIds.length === 2 && userIds.includes(c9me.userId) && userIds.includes(c9user.userId)) {
                         return this._fetchButtonForConnection(c.connectionNumber);
                     }

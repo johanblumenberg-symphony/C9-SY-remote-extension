@@ -62,10 +62,17 @@ public class ManagementAPI {
     public Object getUsers(
         @RequestHeader("x-symphony-csrf-token") String csrfToken,
         @RequestHeader("cookie") List<String> cookies,
-        @RequestParam("email") String email) {
+        @RequestParam(name="userId", required=false) Integer userId,
+        @RequestParam(name="email", required=false) String email) {
         sbeApi.getUser(csrfToken, cookies);
 
-        return c9Api.getRawUserByEmail(email);
+        if (userId != null) {
+            return c9Api.getRawUser(userId);
+        } else if (email != null) {
+            return c9Api.getRawUserByEmail(email);
+        } else {
+            throw new RestAPI.BadRequest();
+        }
     }
 
     @GetMapping("/mgmt/connections")

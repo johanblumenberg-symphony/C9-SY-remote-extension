@@ -173,6 +173,16 @@ export class C9API {
         }
     }
 
+    public async getUser(userId: number): Promise<User> {
+        const res = await this._http.get<UsersResponse>(`/cloud9/api/v1/mgmt/users?userId=${userId}`);
+
+        if (res.ok) {
+            return res.data.users[0];
+        } else {
+            throw new HttpError(res);
+        }
+    }
+
     public async getUserByEmail(email: string): Promise<User | undefined> {
         const res = await this._http.get<UsersResponse>(`/cloud9/api/v1/mgmt/users?email=${encodeURIComponent(email)}`);
 

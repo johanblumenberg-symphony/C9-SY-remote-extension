@@ -33,6 +33,14 @@ public class RestAPI {
         }
     }
 
+    public static class BadRequest extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        public BadRequest() {
+            super("BadRequest");
+        }        
+    }
+    
     @ControllerAdvice
     public static class GlobalExceptionHandler {
         @ExceptionHandler(Unauthorized.class)
@@ -44,5 +52,10 @@ public class RestAPI {
         public void resourceNotFound(HttpServletResponse response, NotFound e) throws IOException {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
-    }
+
+        @ExceptionHandler(BadRequest.class)
+        public void badRequest(HttpServletResponse response, BadRequest e) throws IOException {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        }
+}
 }
