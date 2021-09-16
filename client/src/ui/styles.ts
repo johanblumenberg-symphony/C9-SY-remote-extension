@@ -4,8 +4,10 @@ const BACKGROUND_DARK = 'rgb(12, 17, 24)';
 const BACKGROUND_LIGHT = 'rgb(28, 39, 60)';
 const TEXT_DARK = 'rgb(47, 76, 125)';
 const TEXT_LIGHT = 'rgb(255, 255, 255)';
-const BACKGROUND_CALLING = 'rgb(9, 145, 78)';
-const BORDER_CALLING = 'rgb(28, 173, 101)';
+const OUTBOUND_BACKGROUND = 'rgb(9, 145, 78)';
+const OUTBOUND_BORDER = 'rgb(28, 173, 101)';
+const INBOUND_BACKGROUND = 'rgb(160, 40, 42)';
+const INBOUND_BORDER = 'rgb(205, 60, 60)';
 
 export const styles = () => createStyles({
     root: {
@@ -57,14 +59,20 @@ export const styles = () => createStyles({
             alignItems: 'center',
         },
 
-        '&$userMicOn': {
-            backgroundColor: BACKGROUND_CALLING,
-            borderColor: BORDER_CALLING,
-        }
+        '&$connectedInbound': {
+            backgroundColor: INBOUND_BACKGROUND,
+            borderColor: INBOUND_BORDER,
+        },
+
+        '&$connectedOutbound': {
+            backgroundColor: OUTBOUND_BACKGROUND,
+            borderColor: OUTBOUND_BORDER,
+        },
     },
 
     empty: { },
-    userMicOn: {},
+    connectedOutbound: {},
+    connectedInbound: {},
 
     buttonLabel: {
         color: TEXT_LIGHT,

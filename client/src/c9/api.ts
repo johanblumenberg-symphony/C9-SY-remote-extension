@@ -71,6 +71,14 @@ export interface SessionCreated {
     session: string;
 }
 
+export enum CallStatusCode {
+    Offline = 0,
+    Idle = 1,
+    ConnectedOutbound = 16,
+    ConnectedInbound = 17,
+    ConnectedTwoWay = 18,
+}
+
 export interface CallStatus {
     callId: string;
     userId: number;
@@ -80,7 +88,7 @@ export interface CallStatus {
     buttonLabel: string;
     nearEndNumber: string;
     nearEndNumberInstance: string;
-    callStatusCode: number;
+    callStatusCode: CallStatusCode;
     statusChangeCode: number;
     nearEndReleased: boolean;
     milliDuration: number;
@@ -92,6 +100,37 @@ export interface CallStatus {
     farEnd: {};
     nearEnd: {};
     snapshot: boolean;
+}
+
+export namespace CallStatus {
+    export function isDisconnected(callStatus: CallStatus | undefined): boolean {
+        return !callStatus || (
+            callStatus.callStatusCode === CallStatusCode.Offline ||
+            callStatus.callStatusCode === CallStatusCode.Idle
+        );
+    }
+
+    export function isConnected(callStatus: CallStatus | undefined): boolean {
+        return !!callStatus && (
+            callStatus.callStatusCode === CallStatusCode.ConnectedInbound ||
+            callStatus.callStatusCode === CallStatusCode.ConnectedOutbound ||
+            callStatus.callStatusCode === CallStatusCode.ConnectedTwoWay
+        );
+    }
+
+    export function isConnectedInbound(callStatus: CallStatus | undefined): boolean {
+        return !!callStatus && (
+            callStatus.callStatusCode === CallStatusCode.ConnectedInbound ||
+            callStatus.callStatusCode === CallStatusCode.ConnectedTwoWay
+        );
+    }
+
+    export function isConnectedOutbound(callStatus: CallStatus | undefined): boolean {
+        return !!callStatus && (
+            callStatus.callStatusCode === CallStatusCode.ConnectedOutbound ||
+            callStatus.callStatusCode === CallStatusCode.ConnectedTwoWay
+        );
+    }
 }
 
 export interface CallStatusMessage {

@@ -113,8 +113,11 @@ export class C9StoreImpl implements C9Store {
     }
 
     private _applyCallStatus(call: CallStatus) {
-        // TODO: clear old calls
-        this._calls = [call, ...this._calls.filter(c => c.callId !== call.callId)];
+        if (CallStatus.isDisconnected(call)) {
+            this._calls = this._calls.filter(c => c.callId !== call.callId);
+        } else {
+            this._calls = [call, ...this._calls.filter(c => c.callId !== call.callId)];
+        }
         this._tracker.post();
     }
 

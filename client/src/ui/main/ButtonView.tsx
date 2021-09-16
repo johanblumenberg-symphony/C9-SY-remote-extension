@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button } from '../../c9/api';
+import { Button, CallStatus } from '../../c9/api';
 import { styles } from '../styles';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { Icon } from '@material-ui/core';
@@ -19,15 +19,15 @@ class ButtonView extends ConnectedComponent<WithStyles<typeof styles> & Props> {
         const { button } = this.props;
 
         return {
-            userMicOn: button && this._store.getCallStatus(button.connectionNumber)?.callProperties.userMicOn,
+            callStatus: button && this._store.getCallStatus(button.connectionNumber),
         };
     }
 
     private _onClick = () => {
-        const { userMicOn } = this.depsToState();
+        const { callStatus } = this.depsToState();
 
         if (this.props.button) {
-            if (userMicOn) {
+            if (CallStatus.isConnectedOutbound(callStatus)) {
                 this._store.releaseCall(this.props.button.connectionNumber);
             } else {
                 this._store.initiateCall(this.props.button.connectionNumber);
@@ -37,11 +37,16 @@ class ButtonView extends ConnectedComponent<WithStyles<typeof styles> & Props> {
 
     render() {
         const { classes, button } = this.props;
-        const { userMicOn } = this.depsToState();
+        const { callStatus } = this.depsToState();
+
+        const classNames = classnames(classes.button, {
+            [classes.connectedOutbound]: CallStatus.isConnectedOutbound(callStatus),
+            [classes.connectedInbound]: CallStatus.isConnectedInbound(callStatus),
+        });
 
         if (button) {
             return (
-                <div className={ classnames(classes.button, { [classes.userMicOn]: userMicOn }) } onClick={ this._onClick }>
+                <div className={ classNames } onClick={ this._onClick }>
                     <span className={ classes.buttonLabel }>{ button.buttonLabel }</span>
                 </div>
             );
