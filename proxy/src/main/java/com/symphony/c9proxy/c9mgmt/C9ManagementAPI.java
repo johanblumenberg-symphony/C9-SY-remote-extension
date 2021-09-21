@@ -38,7 +38,21 @@ import lombok.Data;
 public class C9ManagementAPI {
     private final Logger logger = LoggerFactory.getLogger(C9ManagementAPI.class);
     private final RestTemplate api;
-    private final Mac HMAC;
+    private final C9ManagementConfig config;
+
+    private final ThreadLocal<Mac> HMAC = new ThreadLocal<Mac>() {
+        @Override
+        protected Mac initialValue() {
+            try {
+            Mac HMAC = Mac.getInstance("HmacSHA512");
+            HMAC.init(new SecretKeySpec(C9ManagementAPI.this.config.apiSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA512"));
+            return HMAC;
+            } catch (IllegalArgumentException | InvalidKeyException | NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    };
+    
     private static final ThreadLocal<DateFormat> DATE_HEADER_FORMAT = new ThreadLocal<DateFormat>() {
         @Override
         protected DateFormat initialValue() {
@@ -50,8 +64,7 @@ public class C9ManagementAPI {
 
     public C9ManagementAPI(C9ManagementConfig config, RestTemplateBuilder restTemplateBuilder)
         throws NoSuchAlgorithmException, InvalidKeyException {
-        this.HMAC = Mac.getInstance("HmacSHA512");
-        this.HMAC.init(new SecretKeySpec(config.apiSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA512"));
+        this.config = config;
 
         this.api = restTemplateBuilder.rootUri(config.apiRoot)
             .additionalInterceptors(new ClientHttpRequestInterceptor() {
@@ -75,7 +88,7 @@ public class C9ManagementAPI {
                             ""));
 
                     String signature = Base64.getEncoder()
-                        .encodeToString(HMAC.doFinal(message.getBytes(StandardCharsets.UTF_8)));
+                        .encodeToString(HMAC.get().doFinal(message.getBytes(StandardCharsets.UTF_8)));
 
                     request.getHeaders().set("Date", date);
                     request.getHeaders().set("Authorization",
