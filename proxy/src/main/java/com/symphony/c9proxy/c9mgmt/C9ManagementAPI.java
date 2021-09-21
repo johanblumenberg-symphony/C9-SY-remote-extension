@@ -128,6 +128,9 @@ public class C9ManagementAPI {
         } catch (HttpClientErrorException.NotFound e) {
             logger.warn("Not found accessing /users: " + e.getMessage());
             throw new RestAPI.NotFound();
+        } catch (Exception e) {
+            logger.error("Unknown error accessing /users: " + e.getMessage());
+            throw e;
         }
     }
 
@@ -147,6 +150,9 @@ public class C9ManagementAPI {
         } catch (HttpClientErrorException.NotFound e) {
             logger.warn("Not found accessing /users/{userId}/buttons: " + e.getMessage());
             throw new RestAPI.NotFound();
+        } catch (Exception e) {
+            logger.error("Unknown error accessing /users/{userId}/buttons: " + e.getMessage());
+            throw e;
         }
     }
 
@@ -159,6 +165,9 @@ public class C9ManagementAPI {
         } catch (HttpClientErrorException.NotFound e) {
             logger.warn("Not found accessing /users: " + e.getMessage());
             throw new RestAPI.NotFound();
+        } catch (Exception e) {
+            logger.error("Unknown error accessing /users: " + e.getMessage());
+            throw e;
         }
     }
 
@@ -171,6 +180,9 @@ public class C9ManagementAPI {
         } catch (HttpClientErrorException.NotFound e) {
             logger.warn("Not found accessing /users: " + e.getMessage());
             throw new RestAPI.NotFound();
+        } catch (Exception e) {
+            logger.error("Unknown error accessing /users: " + e.getMessage());
+            throw e;
         }
     }
 
@@ -183,6 +195,9 @@ public class C9ManagementAPI {
         } catch (HttpClientErrorException.NotFound e) {
             logger.warn("Not found accessing /users/{userId}/buttons: " + e.getMessage());
             throw new RestAPI.NotFound();
+        } catch (Exception e) {
+            logger.error("Unknown error accessing /users/{userId}/buttons: " + e.getMessage());
+            throw e;
         }
     }
     
@@ -195,7 +210,10 @@ public class C9ManagementAPI {
         } catch (HttpClientErrorException.NotFound e) {
             logger.warn("Not found accessing /connections: " + e.getMessage());
             throw new RestAPI.NotFound();
-        }        
+        } catch (Exception e) {
+            logger.error("Unknown error accessing /connections: " + e.getMessage());
+            throw e;
+        }
     }
 
     public Object getRawConnections(List<String> connectionNumbers) {
@@ -207,6 +225,9 @@ public class C9ManagementAPI {
         } catch (HttpClientErrorException.NotFound e) {
             logger.warn("Not found accessing /connections: " + e.getMessage());
             throw new RestAPI.NotFound();
-        }        
+        } catch (Exception e) {
+            logger.error("Unknown error accessing /connections: " + e.getMessage());
+            throw e;
+        }
     }
 }
