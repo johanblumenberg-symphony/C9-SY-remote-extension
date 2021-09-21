@@ -18,6 +18,7 @@ const argv = yargs.argv;
 const LOCAL_DOMAIN = 'local-dev.symphony.com';
 const LOCAL_PORT = 9091;
 const proxyTarget = argv.proxy ? `https://${argv.proxy}/` : 'https://st3.symphony.com/';
+const cloud9Target = argv.cloud9 ? `https://${argv.cloud9}/` : 'https://localhost:8443';
 
 module.exports = {
     mode: isDev() ? 'development' : 'production',
@@ -78,7 +79,7 @@ module.exports = {
         disableHostCheck: true,
         proxy: {
             '/cloud9/**': {
-                target: 'https://localhost:8443',
+                target: cloud9Target,
                 changeOrigin: true,
                 hostRewrite: true,
                 cookieDomainRewrite: LOCAL_DOMAIN,

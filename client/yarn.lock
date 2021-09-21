@@ -570,7 +570,7 @@
     react "16.9.0"
     react-dom "16.9.0"
 
-"@sym20/core-conversations@~0.0.18", "@sym20/core-conversations@~0.0.24":
+"@sym20/core-conversations@^0.0.24", "@sym20/core-conversations@~0.0.18", "@sym20/core-conversations@~0.0.24":
   version "0.0.24"
   resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/@sym20/core-conversations/-/@sym20/core-conversations-0.0.24.tgz#f890f185fe1b7d04251f96372bb525ab546b2157"
   integrity sha1-+JDxhf4bfQQlH5Y3K7Ulq1RrIVc=
@@ -701,15 +701,17 @@
   resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/@symphony/rtc-http/-/@symphony/rtc-http-1.0.11.tgz#01c45485371657361c4d483c63a525842c534555"
   integrity sha1-AcRUhTcWVzYcTUg8Y6UlhCxTRVU=
 
-"@symphony/rtc-memoize@^1.0.6", "@symphony/rtc-memoize@~1.0.0 || 1.0.0-automatic", "@symphony/rtc-memoize@~1.0.6":
+"@symphony/rtc-memoize@^1.0.6", "@symphony/rtc-memoize@~1.0.6":
   version "1.0.6"
   resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/@symphony/rtc-memoize/-/@symphony/rtc-memoize-1.0.6.tgz#00809e968850b7ef5f51944d23fe0fce4f0552f1"
   integrity sha1-AICelohQt+9fUZRNI/4Pzk8FUvE=
 
-"@symphony/rtc-react-state@file:../../SFE-RTC/packages/react-state":
-  version "1.0.0-automatic"
+"@symphony/rtc-react-state@^1.0.0":
+  version "1.0.2"
+  resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/@symphony/rtc-react-state/-/@symphony/rtc-react-state-1.0.2.tgz#db365d1c8ae88ad9723652764b18f3c28c3c00be"
+  integrity sha1-2zZdHIroitlyNlJ2Sxjzwow8AL4=
   dependencies:
-    "@symphony/rtc-memoize" "~1.0.0 || 1.0.0-automatic"
+    "@symphony/rtc-memoize" "~1.0.6"
     inversify "^4.3.0"
 
 "@symphony/saveAs@0.0.2":

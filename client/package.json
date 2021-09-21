@@ -26,7 +26,7 @@
     "@sym20/core-conversations": "^0.0.24",
     "@symphony/rtc-http": "^1.0.11",
     "@symphony/rtc-memoize": "^1.0.6",
-    "@symphony/rtc-react-state": "/Users/johan.blumenberg/code/SFE-RTC/packages/react-state/",
+    "@symphony/rtc-react-state": "^1.0.0",
     "@symphony/symphony-rtc": "^7.0.1058",
     "classnames": "^2.3.1",
     "tslib": "^2.3.1",
