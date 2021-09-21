@@ -2,7 +2,7 @@ import * as React from 'react';
 import { interfaces, uiComps } from '@mana/extension-lib';
 import { createUpdater } from '@symphony/symphony-rtc/dist/js/utils/createUpdater';
 import C9App from '../ui/C9App';
-import { ChangeTracker, ObjectStore, ObjectStoreBinding } from '@symphony/rtc-react-state';
+import { ChangeTracker, ObjectStore, ObjectStoreBindingRoot } from '@symphony/rtc-react-state';
 import { AppPresenter } from '../presentation/AppPresenter';
 
 export class OverlayView extends interfaces.BaseView implements interfaces.overlay.IOverlayView {
@@ -21,9 +21,9 @@ export class OverlayView extends interfaces.BaseView implements interfaces.overl
         class RootComponent extends React.PureComponent {
             render() {
                 return (
-                    <ObjectStoreBinding objectStore={ container } tag={ ChangeTracker.TypeTag } value={ tracker }>
+                    <ObjectStoreBindingRoot objectStore={ container } >
                         <C9App />
-                    </ObjectStoreBinding>
+                    </ObjectStoreBindingRoot>
                 );
             }
         }

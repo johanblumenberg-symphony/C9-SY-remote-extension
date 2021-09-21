@@ -4,7 +4,7 @@ import { C9API } from "./c9/api";
 import { C9Store, C9StoreImpl } from "./c9/C9Store";
 import { RailItem } from "./rail/RailItem";
 import { addHeader, createHttp } from "@symphony/rtc-http";
-import { createChangeTracker, createObjectStore } from "@symphony/rtc-react-state";
+import { ChangeTracker, createChangeTracker, createObjectStore } from "@symphony/rtc-react-state";
 
 import Symbols = interfaces.Symbols;
 import { AppPresenter } from "./presentation/AppPresenter";
@@ -31,6 +31,7 @@ export default class Extension implements IExtension {
 
         const api = new C9API(http);
         const store = new C9StoreImpl(tracker, api, userStore);
+        container.bind(ChangeTracker.TypeTag).to(tracker);
         container.bind(C9Store.TypeTag).to(store);
 
         try {
